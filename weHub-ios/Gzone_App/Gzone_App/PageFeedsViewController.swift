@@ -99,6 +99,8 @@ extension PageFeedsViewController {
         return posts.count
     }
     
+    
+    
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         
         // Force update of cell height when no media content
