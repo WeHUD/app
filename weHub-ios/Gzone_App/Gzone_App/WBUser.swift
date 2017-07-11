@@ -7,6 +7,8 @@
 //
 
 import Foundation
+import UIKit
+
 class WBUser: NSObject {
     
     func getAllUsers(accessToken : String,offset : String, completion: @escaping (_ result: [User]) -> Void){
@@ -188,9 +190,29 @@ class WBUser: NSObject {
             do{
                 let jsonResult = try JSONSerialization.jsonObject(with: data!, options: .mutableLeaves) as! NSDictionary
                 print(jsonResult)
-                let token = self.JSONToToken(json: jsonResult)
-                completion(token!)
                 
+                if (jsonResult["access_token"] as? String) != nil {
+                    
+                    let token = self.JSONToToken(json: jsonResult)
+                    completion(token!)
+                }else{
+                    
+                    if let codeStatus = jsonResult["code"] as? Int {
+                        print(codeStatus)
+                        
+                        let status = codeStatus
+                        
+                        if status != 200 {
+                            
+                            DispatchQueue.main.async(execute: {
+                                
+                                let topViewController = UIApplication.shared.keyWindow?.rootViewController
+                                topViewController?.httpErrorStatusAlert(status: status, errorType: (jsonResult["error"] as! String))
+                            })
+                            
+                        }
+                    }
+                }
             }
             catch{
                 print("error")

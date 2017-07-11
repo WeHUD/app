@@ -9,21 +9,21 @@
 import UIKit
 
 extension UIViewController {
-
+    
     func locationServiceDisabledAlert (title: String, message: String ) {
         
         let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
         let OKAction = UIAlertAction(title: "OK", style: .default, handler: nil)
         alertController.addAction(OKAction)
         self.present(alertController, animated: true, completion: nil)
-    
+        
     }
     
     func followUserAlert (user: UserMock ) {
         
         let alertController = UIAlertController(title: "Want to know more about \(user.username) ?", message: "", preferredStyle: .alert)
         alertController.addAction(UIAlertAction(title: "View Profile", style: UIAlertActionStyle.default, handler: { _ in
-            let VC = self.storyboard?.instantiateViewController(withIdentifier: "ProfilUser") as! ProfilUserViewController 
+            let VC = self.storyboard?.instantiateViewController(withIdentifier: "ProfilUser") as! ProfilUserViewController
             //alertController.user = self.connectedUser
             self.present(VC, animated: true, completion: nil)
         }))
