@@ -9,9 +9,18 @@
 import UIKit
 
 class MyFeedsTableViewCell: UITableViewCell {
+     var tapAction: ((UITableViewCell) -> Void)?
+     var commentAction: ((UITableViewCell) -> Void)?
     
+    @IBOutlet weak var numberComment: UILabel!
+    @IBAction func likePost(_ sender: Any) {
+        tapAction?(self)
+    }
+
+    @IBAction func commentPost(_ sender: Any) {
+        commentAction?(self)
+    }
     
-   
     @IBOutlet weak var userNameLabel: UILabel!
     @IBOutlet weak var userReplyLabel: UILabel!
     @IBOutlet weak var postDescription: UITextView!
@@ -28,9 +37,7 @@ class MyFeedsTableViewCell: UITableViewCell {
     @IBOutlet weak var commentPostBtn: UIButton!
     
     
-    @IBAction func likePost(_ sender: Any) {
-
-    }
+    
     
     override func awakeFromNib() {
         super.awakeFromNib()

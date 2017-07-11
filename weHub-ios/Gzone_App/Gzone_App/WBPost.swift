@@ -63,10 +63,10 @@ class WBPost: NSObject {
         task.resume()
     }
     
-    func getPostOfFollowedUsers(userId : String,accessToken : String,offset : String,_ completion: @escaping (_ result: [Post]) -> Void){
+    func getPostOfFollowedUsers(userId : String,accessToken : String,_ completion: @escaping (_ result: [Post]) -> Void){
         
         var posts : [Post] = []
-        let urlPath :String = "https://g-zone.herokuapp.com/posts/followers/"+userId+"?access_token="+accessToken+"&offset="+offset
+        let urlPath :String = "https://g-zone.herokuapp.com/posts/followers/"+userId+"?access_token="+accessToken
         
         let url: URL = URL(string: urlPath)!
         let session = URLSession.shared
@@ -89,7 +89,7 @@ class WBPost: NSObject {
         })
         task.resume()
     }
-
+    
     
     func addPost(userId : String,text : String,author : String,accessToken : String, completion: @escaping (_ status : Bool) -> Void){
         
@@ -167,7 +167,7 @@ class WBPost: NSObject {
             completion(false)
         }
     }
-
+    
     func addPostOpinion(userId : String,text : String,gameId : String,author : String,mark : String,flagOpinion : String,accessToken : String, completion: @escaping (_ status : Bool) -> Void){
         
         let urlPath :String = "https://g-zone.herokuapp.com/posts?access_token="+accessToken
@@ -207,7 +207,7 @@ class WBPost: NSObject {
         }
     }
     
-  
+    
     
     func addPostGame(userId : String,text : String,author : String,gameId : String,accessToken : String, completion: @escaping (_ status : Bool) -> Void){
         
@@ -370,7 +370,7 @@ class WBPost: NSObject {
         })
         task.resume()
     }
-
+    
     
     func getPostByLike(userId : String,accessToken : String,_ completion: @escaping (_ result: [Post]) -> Void){
         
@@ -427,7 +427,7 @@ class WBPost: NSObject {
         task.resume()
     }
     
-
+    
     
     func JSONToPostArray(_ jsonEvents : NSArray) -> [Post]{
         print (jsonEvents)
@@ -471,7 +471,7 @@ class WBPost: NSObject {
             }else{
                 mark = 0
             }
-
+            
             
             //let username = json.object(forKey: "username") as! String
             let post : Post = Post(_id: _id, userId: userId, gameId: gameId, text: text, likes: likes, comments: comments, flagOpinion: flagOpinion, video: video, datetimeCreated: datetimeCreated, author: author, mark: mark)

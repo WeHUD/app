@@ -13,46 +13,26 @@ class ListGameViewController : UIViewController, UITableViewDataSource,UITableVi
     @IBOutlet var tableView: UITableView!
     
     var games : [Game] = []
-    var followers :[User] = []
-    var isListGame : Bool = false
-    var avatars : [UIImage] = []
-    var isPost : Bool = false
+    var isPost : Bool = true
+    var note : Int = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.setHidesBackButton(true, animated:true);
+        self.getGames()
         self.tableView.delegate = self
         self.tableView.dataSource = self
-        if(isListGame){
-            self.getGames()
-        }else{
-            self.getUsers()
-        }
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if(self.isListGame){
-            return self.games.count
-        }else{
-            return self.followers.count
-        }
+        return self.games.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if(isListGame){
-            let cell = self.tableView.dequeueReusableCell(withIdentifier: "listGame") as! ListGameTableViewCell
-            
-            let game = self.games[indexPath.row]
-            cell.gameName.text = game.name
-            return cell
-        }else{
-            let cell = self.tableView.dequeueReusableCell(withIdentifier: "listFollower") as! ListUserTableViewCell
-            let follower = self.followers[indexPath.row]
-            cell.username.text = follower.username
-            cell.avatar.image = self.avatars[indexPath.row]
-            return cell
-        
-        }
+        let cell = self.tableView.dequeueReusableCell(withIdentifier: "cell") as! ListGameTableViewCell
+        let game = self.games[indexPath.row]
+        cell.gameName.text = game.name
+        return cell
     }
     
     
@@ -67,16 +47,11 @@ class ListGameViewController : UIViewController, UITableViewDataSource,UITableVi
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
         let vc = segue.destination as! CreatePostViewController
-       // viewController.user = self.games[(self.tableView.indexPathForSelectedRow?.row)!]
-        let row = self.tableView.indexPathForSelectedRow?.row
-        if(self.isListGame){
-            vc.game = self.games[row!]
-            vc.user = nil
-        }else{
-            vc.user = self.followers[row!]
-            vc.game = nil
-        }
+        vc.typePost = 2
+        vc.game = self.games[(self.tableView.indexPathForSelectedRow?.row)!]
         vc.isPost = self.isPost
+        vc.note = self.note
+        //   vc.textPost.text = "@" + self.games[(self.tableView.indexPathForSelectedRow?.row)!].name
         
     }
     func getGames()->Void{
@@ -89,26 +64,26 @@ class ListGameViewController : UIViewController, UITableViewDataSource,UITableVi
         }
     }
     
-    func getUsers()->Void{
-        
-        let userWB : WBUser = WBUser()
-        userWB.getFollowedUser(accessToken: AuthenticationService.sharedInstance.accessToken!,  userId : AuthenticationService.sharedInstance.currentUser!._id,offset: "0") {
-            (result: [User]) in
-            self.followers = result
-            self.imageFromUrl(followers: self.followers)
-        }
-    }
+    /* func getUsers()->Void{
+     
+     let userWB : WBUser = WBUser()
+     userWB.getFollowedUser(accessToken: AuthenticationService.sharedInstance.accessToken!,  userId : AuthenticationService.sharedInstance.currentUser!._id,offset: "0") {
+     (result: [User]) in
+     self.followers = result
+     self.imageFromUrl(followers: self.followers)
+     }
+     }*/
     
     
-    func imageFromUrl(followers : [User]){
-        for follower in followers {
-            let imageUrlString = follower.avatar
-            let imageUrl:URL = URL(string: imageUrlString!)!
-            let imageData:NSData = NSData(contentsOf: imageUrl)!
-            self.avatars.append(UIImage(data: imageData as Data)!)
-        }
-        self.refreshTableView()
-    }
+    /* func imageFromUrl(followers : [User]){
+     for follower in followers {
+     let imageUrlString = follower.avatar
+     let imageUrl:URL = URL(string: imageUrlString!)!
+     let imageData:NSData = NSData(contentsOf: imageUrl)!
+     self.avatars.append(UIImage(data: imageData as Data)!)
+     }
+     self.refreshTableView()
+     }*/
     
     
     

@@ -17,15 +17,15 @@ class PageGamesViewController: UITableViewController, IndicatorInfoProvider,UISe
     //var searchController : UISearchController!
     
     //Mock for populate cells
-   /* struct Game {
-        var title : String?
-    }
-    
-    var games = [[Game(title: "Horizon Zero Dawn"),Game(title: "Resident Evil")],
-                 [Game(title: "Tekken 7"),Game(title: "Uncharted 4")],
-                 [Game(title: "Grand Theft Auto V"),Game(title: "Injustice 2")]]
-    
-    */
+    /* struct Game {
+     var title : String?
+     }
+     
+     var games = [[Game(title: "Horizon Zero Dawn"),Game(title: "Resident Evil")],
+     [Game(title: "Tekken 7"),Game(title: "Uncharted 4")],
+     [Game(title: "Grand Theft Auto V"),Game(title: "Injustice 2")]]
+     
+     */
     //Initialize the tableView itemInfo
     var itemInfo = IndicatorInfo(title: "View")
     init(style: UITableViewStyle, itemInfo: IndicatorInfo) {
@@ -44,13 +44,13 @@ class PageGamesViewController: UITableViewController, IndicatorInfoProvider,UISe
         print("Games View");
         
         //Settings for custom table cell
-        tableView.dataSource = self
-        tableView.delegate = self
+        tableView.register(UINib(nibName: "GamesTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: cellIdentifier)
+        tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 200.0
         tableView.rowHeight = 150.0
-        tableView.scrollsToTop = false
-        tableView.allowsSelection = false
-        tableView.register(UINib(nibName: "GamesTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: cellIdentifier)
+        //tableView.allowsSelection = false
+        self.tableView.delegate = self
+        self.tableView.dataSource = self
         
     }
     
@@ -70,11 +70,11 @@ class PageGamesViewController: UITableViewController, IndicatorInfoProvider,UISe
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         
         return self.categories[section]
-
+        
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
-
+        
         return self.categories.count
     }
     
@@ -88,18 +88,28 @@ class PageGamesViewController: UITableViewController, IndicatorInfoProvider,UISe
         let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! GamesTableViewCell
         
         let game = self.games[indexPath.row]
-        let section = indexPath.section
+        _ = indexPath.section
         
         cell.gameTitleLbl.text = game.name
         
         return cell
     }
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        let storyboard = UIStoryboard(name: "Home", bundle: nil)
+        let vc = storyboard.instantiateViewController(withIdentifier: "Game_ID") as! GameViewController
+        vc.game = self.games[indexPath.row]
+        self.navigationController?.pushViewController(vc, animated: true)
+        
+        
+    }
+    
     
     func indicatorInfo(for pagerTabStripController: PagerTabStripViewController) -> IndicatorInfo {
         
         return itemInfo
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -120,7 +130,7 @@ class PageGamesViewController: UITableViewController, IndicatorInfoProvider,UISe
             self.tableView.reloadData()
         })
     }
-
+    
     
 }
 

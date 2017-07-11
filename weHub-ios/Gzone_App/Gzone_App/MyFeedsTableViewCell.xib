@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12121" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12120" systemVersion="16D32" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -16,7 +16,7 @@
             <rect key="frame" x="0.0" y="0.0" width="311" height="492"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="HQc-HT-drB" id="aES-35-daI">
-                <rect key="frame" x="0.0" y="0.0" width="311" height="492"/>
+                <rect key="frame" x="0.0" y="0.0" width="311" height="491.5"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DTr-Qj-BBg">
@@ -79,13 +79,16 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" backgroundImage="likeIcon"/>
                                 <connections>
-                                    <action selector="likePost:" destination="HQc-HT-drB" eventType="touchUpInside" id="Itm-2I-dNj"/>
+                                    <action selector="likePost:" destination="HQc-HT-drB" eventType="touchUpInside" id="Jtb-d0-1cc"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gO2-3g-7ag">
                                 <rect key="frame" x="262" y="5" width="25" height="25"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" backgroundImage="commentIcon"/>
+                                <connections>
+                                    <action selector="commentPost:" destination="HQc-HT-drB" eventType="touchUpInside" id="b6R-l2-Qvt"/>
+                                </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Op5-tc-yaZ" userLabel="Number Comment">
                                 <rect key="frame" x="227" y="9" width="27" height="21"/>
@@ -160,6 +163,7 @@
                 <outlet property="commentPostBtn" destination="gO2-3g-7ag" id="2Pv-WT-hsb"/>
                 <outlet property="likePostBtn" destination="Nzm-cu-qFM" id="03Y-Dh-cMc"/>
                 <outlet property="mediaImageView" destination="0XP-oM-jvq" id="Naz-nU-bJd"/>
+                <outlet property="numberComment" destination="Op5-tc-yaZ" id="gBY-W1-rU5"/>
                 <outlet property="numberLike" destination="6hV-5Y-JFu" id="x9c-n0-m1A"/>
                 <outlet property="postDate" destination="5GE-mh-qJT" id="3Ca-rg-0er"/>
                 <outlet property="postDescription" destination="FCF-dS-a4e" id="AFd-0L-InY"/>

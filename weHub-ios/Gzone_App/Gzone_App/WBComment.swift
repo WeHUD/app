@@ -9,40 +9,41 @@
 import Foundation
 class WBComment: NSObject {
     
-    func addComment(userId : String,postId : String,text : String,accessToken : String,_ completion: @escaping (_ result: Void) -> Void){
+    func addComment(userId : String,postId : String,text : String,accessToken : String,_ completion: @escaping (_ result: Bool) -> Void){
         
         let urlPath :String = "https://g-zone.herokuapp.com/comments?access_token="+accessToken
         
-        let url: URL = URL(string: urlPath)!
+        let url: NSURL = NSURL(string: urlPath)!
         let request = NSMutableURLRequest(url: url as URL)
         request.httpMethod = "POST"
-        let session = URLSession.shared
+        request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "content-type")
+        request.setValue("application/json", forHTTPHeaderField: "Content-type")
+        
         let params = ["userId":userId,"postId" : postId,"text" : text]
         
+        let options : JSONSerialization.WritingOptions = JSONSerialization.WritingOptions();
         do{
-            request.httpBody = try JSONSerialization.data(withJSONObject: params, options: JSONSerialization.WritingOptions())
-            print("request is : \(String(describing: request.httpBody))")
+            let requestBody = try JSONSerialization.data(withJSONObject: params, options: options)
+            
+            request.httpBody = requestBody
+            
+            let session = URLSession.shared
+            _ = session.dataTask(with: request as URLRequest, completionHandler: {data, response, error -> Void in
+                
+                if error != nil {
+                    // If there is an error in the web request, print it to the console
+                    print(error!.localizedDescription)
+                    completion( false)
+                }
+                completion(true)
+                
+            }).resume()
         }
         catch{
-            print("NSJSONSerialization error for register webservice")
+            print("error")
+            completion(false)
         }
-        
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.addValue("application/json", forHTTPHeaderField: "Accept")
-        
-        
-        let task = session.dataTask(with: url, completionHandler: {data, response, error -> Void in
-            
-            if error != nil {
-                // If there is an error in the web request, print it to the console
-                print(error!.localizedDescription)
-            }
-            
-            
-        })
-        task.resume()
     }
-    
     func deleteComment(commentId : String,accessToken : String, _ completion: @escaping (_ result: Void) -> Void){
         
         
@@ -97,10 +98,10 @@ class WBComment: NSObject {
         task.resume()
     }
     
-    func getCommentByPostId(postId : String,accessToken : String ,_ completion: @escaping (_ result: [Comment]) -> Void){
+    func getCommentByPostId(postId : String,accessToken : String ,offset : String,_ completion: @escaping (_ result: [Comment]) -> Void){
         
         var comments : [Comment] = []
-        let urlPath :String = "https://g-zone.herokuapp.com/comments/post/"+postId+"&access_token="+accessToken
+        let urlPath :String = "https://g-zone.herokuapp.com/comments/post/"+postId+"?access_token="+accessToken+"&offset="+offset
         
         
         let url: URL = URL(string: urlPath)!
@@ -124,7 +125,7 @@ class WBComment: NSObject {
         })
         task.resume()
     }
-
+    
     
     func getCommentById(commentId : String,accessToken : String,_ completion: @escaping (_ result: Comment) -> Void){
         
@@ -163,7 +164,6 @@ class WBComment: NSObject {
         for object in jsonEvents{
             let _id = (object as AnyObject).object(forKey: "_id") as! String
             let userId = (object as AnyObject).object(forKey: "userId") as! String
-            let postId = (object as AnyObject).object(forKey: "postId") as! String
             let text = (object as AnyObject).object(forKey: "text") as! String
             var video : String
             if((object as AnyObject).object(forKey: "videos") != nil){
@@ -171,9 +171,9 @@ class WBComment: NSObject {
             }else{
                 video = ""
             }
-            let datetimeCreated = (object as AnyObject).object(forKey: "datetimeCreated") as! Date
+            let datetimeCreated = (object as AnyObject).object(forKey: "datetimeCreated") as! String
             
-            let comment : Comment = Comment(_id: _id, userId: userId,postId : postId, text: text, video: video, datetimeCreated: datetimeCreated)
+            let comment : Comment = Comment(_id: _id, userId: userId, text: text, video: video, datetimeCreated: datetimeCreated)
             commentsTab.append(comment);
         }
         return commentsTab;
@@ -181,7 +181,6 @@ class WBComment: NSObject {
     func JSONToComment(json : NSDictionary) ->Comment?{
         let _id = json.object(forKey: "_id") as! String
         let userId = json.object(forKey: "userId") as! String
-        let postId = json.object(forKey: "postId") as! String
         let text = json.object(forKey: "text") as! String
         var video : String
         if(json.object(forKey: "videos") != nil){
@@ -189,9 +188,9 @@ class WBComment: NSObject {
         }else{
             video = ""
         }
-        let datetimeCreated = json.object(forKey: "datetimeCreated") as! Date
+        let datetimeCreated = json.object(forKey: "datetimeCreated") as! String
         
-        let comment : Comment = Comment(_id: _id, userId: userId,postId : postId, text: text, video: video, datetimeCreated: datetimeCreated)
+        let comment : Comment = Comment(_id: _id, userId: userId, text: text, video: video, datetimeCreated: datetimeCreated)
         return comment
     }
     

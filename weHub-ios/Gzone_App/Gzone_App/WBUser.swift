@@ -7,9 +7,6 @@
 //
 
 import Foundation
-import UIKit
-
-
 class WBUser: NSObject {
     
     func getAllUsers(accessToken : String,offset : String, completion: @escaping (_ result: [User]) -> Void){
@@ -43,7 +40,7 @@ class WBUser: NSObject {
     func getUser(userId : String,accessToken : String, completion: @escaping (_ result: User) -> Void){
         
         
-        let urlPath :String = "https://g-zone.herokuapp.com/users/" + userId + "?"+accessToken
+        let urlPath :String = "https://g-zone.herokuapp.com/users/" + userId + "?access_token="+accessToken
         
         let url: NSURL = NSURL(string: urlPath)!
         let session = URLSession.shared
@@ -129,7 +126,7 @@ class WBUser: NSObject {
     
     func updateUser(user : User,accessToken : String, completion: @escaping (_ status : Bool) -> Void){
         
-        let urlPath :String = "https://g-zone.herokuapp.com/users/" + user._id + "?"+accessToken
+        let urlPath :String = "https://g-zone.herokuapp.com/users/" + user._id + "?access_token="+accessToken
         
         let url: NSURL = NSURL(string: urlPath)!
         let request = NSMutableURLRequest(url: url as URL)
@@ -139,7 +136,7 @@ class WBUser: NSObject {
         
         let userData : NSDictionary = ["username" : user.username,"reply" : user.reply,"dateOfBirth" : user.dateOfBirth,"password" : user.password,"longitude" : (user.longitude?.description)!,"latitude" : (user.latitude?.description)!,"followedUsers" : user.followedUsers,"followedGames" : user.followedGames,"score" : user.score,"connected" : user.connected,"avatar" : user.avatar,"datetimeRegister" : user.datetimeRegister?.description,"email" : user.email]
         
-
+        
         
         
         let options : JSONSerialization.WritingOptions = JSONSerialization.WritingOptions();
@@ -167,7 +164,6 @@ class WBUser: NSObject {
     }
     
     func login(userMail : String, userPassword : String,completion: @escaping (_ result: Token) -> Void){
-        var accessToken : String = ""
         let request = NSMutableURLRequest(url: NSURL(string: "https://g-zone.herokuapp.com/oauth/token")! as URL)
         let session = URLSession.shared
         request.httpMethod = "POST"
@@ -192,29 +188,9 @@ class WBUser: NSObject {
             do{
                 let jsonResult = try JSONSerialization.jsonObject(with: data!, options: .mutableLeaves) as! NSDictionary
                 print(jsonResult)
+                let token = self.JSONToToken(json: jsonResult)
+                completion(token!)
                 
-                if (jsonResult["access_token"] as? String) != nil {
-                    
-                    let token = self.JSONToToken(json: jsonResult)
-                    completion(token!)
-                }else{
-                    
-                    if let codeStatus = jsonResult["code"] as? Int {
-                        print(codeStatus)
-                        
-                        let status = codeStatus
-                        
-                        if status != 200 {
-                            
-                            DispatchQueue.main.async(execute: {
-                                
-                                let topViewController = UIApplication.shared.keyWindow?.rootViewController
-                                topViewController?.httpErrorStatusAlert(status: status, errorType: (jsonResult["error"] as! String))
-                            })
-                            
-                        }
-                    }
-                }
             }
             catch{
                 print("error")
@@ -222,7 +198,7 @@ class WBUser: NSObject {
         })
         task.resume()
     }
-
+    
     func getFollowedUser(accessToken : String,userId : String,offset : String, completion: @escaping (_ result: [User]) -> Void){
         
         var users : [User] = []
@@ -250,7 +226,7 @@ class WBUser: NSObject {
         })
         task.resume()
     }
-
+    
     func getFollowedGames(accessToken : String,userId : String,offset : String, completion: @escaping (_ result: [Game]) -> Void){
         
         var games : [Game] = []
@@ -280,10 +256,10 @@ class WBUser: NSObject {
         task.resume()
     }
     
-
     
     
-   static func JSONToUserArray(_ jsonEvents : NSArray) -> [User]{
+    
+    static func JSONToUserArray(_ jsonEvents : NSArray) -> [User]{
         print (jsonEvents)
         var users : [User] = []
         
@@ -326,6 +302,46 @@ class WBUser: NSObject {
         return users;
     }
     
+    func updateLocationUser(userId : String,longitude : String,latitude : String,accessToken : String, completion: @escaping (_ status : Bool) -> Void){
+        
+        let urlPath :String = "https://g-zone.herokuapp.com/users/" + userId + "?acess_token="+accessToken
+        
+        let url: NSURL = NSURL(string: urlPath)!
+        let request = NSMutableURLRequest(url: url as URL)
+        request.httpMethod = "PUT"
+        request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "content-type")
+        request.setValue("application/json", forHTTPHeaderField: "Content-type")
+        
+        let userData : NSDictionary = ["longitude" : longitude,"latitude" : latitude]
+        
+        
+        
+        
+        let options : JSONSerialization.WritingOptions = JSONSerialization.WritingOptions();
+        do{
+            let requestBody = try JSONSerialization.data(withJSONObject: userData, options: options)
+            
+            request.httpBody = requestBody
+            
+            let session = URLSession.shared
+            _ = session.dataTask(with: request as URLRequest, completionHandler: {data, response, error -> Void in
+                
+                if error != nil {
+                    // If there is an error in the web request, print it to the console
+                    print(error!.localizedDescription)
+                    completion(false)
+                }
+                completion(true)
+                
+            }).resume()
+        }
+        catch{
+            print("error")
+            completion(false)
+        }
+    }
+    
+    
     static func JSONToUser(jsonUsers : NSDictionary) ->User?{
         let _id = jsonUsers.object(forKey: "_id") as! String
         let dateOfBirth = jsonUsers.object(forKey: "dateOfBirth") as! String
@@ -364,13 +380,13 @@ class WBUser: NSObject {
         return newUser
     }
     
-     func JSONToToken(json : NSDictionary) ->Token?{
+    func JSONToToken(json : NSDictionary) ->Token?{
         let accessToken = json.object(forKey: "access_token") as! String
         let expire = json.object(forKey: "expires_in") as! Int
         let token : Token = Token(accessToken: accessToken, expire: expire)
         return token
     }
-
-
-
+    
+    
+    
 }

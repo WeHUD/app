@@ -159,13 +159,26 @@ extension PageFeedsViewController {
                 cell.mediaImageView.isUserInteractionEnabled = false
             }
         }
-        
+        cell.numberComment.text = post.comments.count.description
         cell.numberLike.text = post.likes.count.description
-        
+        cell.commentAction = { (cell) in self.comment(post: post)}
         
         return cell
         
     }
+    func comment(post : Post){
+        print(post._id)
+        let storyboard = UIStoryboard(name: "Home", bundle: nil)
+        let vc = storyboard.instantiateViewController(withIdentifier: "Comment_ID") as! CommentViewController
+        vc.post = post
+        vc.note = post.mark
+        vc.flagOpinion = post.flagOpinion
+        self.navigationController?.pushViewController(vc, animated: true)
+        
+        
+        
+    }
+
     
 }
 
@@ -176,13 +189,12 @@ extension PageFeedsViewController {
         
         let postsWB : WBPost = WBPost()
         // self.offset += 1
-        postsWB.getPostOfFollowedUsers(userId: (AuthenticationService.sharedInstance.currentUser!._id), accessToken: AuthenticationService.sharedInstance.accessToken!,offset: self.offset.description) {
+        postsWB.getPostOfFollowedUsers(userId: (AuthenticationService.sharedInstance.currentUser!._id), accessToken: AuthenticationService.sharedInstance.accessToken!) {
             (result: [Post]) in
             if(self.posts.count == 0){
                 self.posts = result
             }else if(self.posts.count != 0 && result.count > 0){
                 self.posts.append(contentsOf: result)
-
             }
             self.posts.reverse()
             self.refreshTableView()

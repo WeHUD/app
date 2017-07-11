@@ -13,7 +13,7 @@ class WBGame: NSObject {
         
         var games : [Game] = []
         let urlPath :String = "https://g-zone.herokuapp.com/games?access_token="+accessToken+"&offset="+offset
-       
+        
         
         let url: URL = URL(string: urlPath)!
         let session = URLSession.shared
@@ -64,7 +64,7 @@ class WBGame: NSObject {
         task.resume()
     }
     
-     func getGamesByCategoryId(categoryId : String,_ completion: @escaping (_ result: [Game]) -> Void){
+    func getGamesByCategoryId(categoryId : String,_ completion: @escaping (_ result: [Game]) -> Void){
         
         var games : [Game] = []
         let urlPath :String = "https://g-zone.herokuapp.com/games/category/"+categoryId
@@ -150,7 +150,7 @@ class WBGame: NSObject {
             }else{
                 boxart = ""
             }
-           
+            
             let datetimeCreated = (object as AnyObject).object(forKey: "datetimeCreated") as! String
             let followersId = (object as AnyObject).object(forKey: "followersId") as! [String]
             
@@ -158,7 +158,7 @@ class WBGame: NSObject {
             
             let game : Game = Game(_id: _id, name: name, platforms: platforms, developer: developer, editor: editor, categories: categories, synopsis: synopsis, solo: solo, multiplayer: multiplayer, cooperative: cooperative, website: website, boxart: boxart, datetimeCreated: datetimeCreated, followerId: followersId)
             games.append(game);
-                    }
+        }
         return games;
     }
     
@@ -183,7 +183,7 @@ class WBGame: NSObject {
         let boxart = jsonGame.object(forKey: "boxart") as! String
         let datetimeCreated = jsonGame.object(forKey: "datetimeCreated") as! String
         let followersId = jsonGame.object(forKey: "followersId") as! [String]
-
+        
         
         
         let game : Game = Game(_id: _id, name: name, platforms: platforms, developer: developer, editor: editor, categories: categories, synopsis: synopsis, solo: solo, multiplayer: multiplayer, cooperative: cooperative, website: website, boxart: boxart, datetimeCreated: datetimeCreated, followerId: followersId)
