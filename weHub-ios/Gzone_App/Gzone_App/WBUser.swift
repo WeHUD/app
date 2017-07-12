@@ -92,13 +92,14 @@ class WBUser: NSObject {
         task.resume()
     }
     
-    func register(username : String, reply : String,email : String,password : String,completion: @escaping (_ result: String) -> Void){
+    func register(username : String, reply : String,email : String,password : String,dateOfBirth : String,completion: @escaping (_ result: String) -> Void){
         
         let request = NSMutableURLRequest(url: NSURL(string: "https://g-zone.herokuapp.com/users")! as URL)
+        print(request)
         let session = URLSession.shared
         request.httpMethod = "POST"
         
-        let params = ["username" : username, "reply" : "@"+username , "dateOfBirth": "2017-05-08T17:01:53.000Z" , "email": email, "password": password]
+        let params = ["username" : username, "reply" : "@"+username , "dateOfBirth": dateOfBirth, "email": email, "password": password,"avatar": "https://s3.ca-central-1.amazonaws.com/g-zone/images/profile01.png"]
         
         do{
             request.httpBody = try JSONSerialization.data(withJSONObject: params, options: JSONSerialization.WritingOptions())
@@ -326,24 +327,26 @@ class WBUser: NSObject {
     
     func updateLocationUser(userId : String,longitude : String,latitude : String,accessToken : String, completion: @escaping (_ status : Bool) -> Void){
         
-        let urlPath :String = "https://g-zone.herokuapp.com/users/" + userId + "?acess_token="+accessToken
+        
+        let urlPath :String = "https://g-zone.herokuapp.com/users/" + userId + "?access_token="+accessToken
         print(urlPath)
+        
         let url: NSURL = NSURL(string: urlPath)!
         let request = NSMutableURLRequest(url: url as URL)
         request.httpMethod = "PUT"
-        request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "content-type")
         request.setValue("application/json", forHTTPHeaderField: "Content-type")
         
-        let userData : Dictionary = ["longitude" : longitude,"latitude" : latitude] as Dictionary<String, String>
+        let userData : NSDictionary = ["longitude" : longitude , "latitude" : latitude ]
         
-        print(userData)
+        
+        
         
         let options : JSONSerialization.WritingOptions = JSONSerialization.WritingOptions();
         do{
-            let requestBody = try JSONSerialization.data(withJSONObject: userData, options: options)
+            let requestBody = try JSONSerialization.data(withJSONObject: userData as Any, options: options)
             
             request.httpBody = requestBody
-            
+            print(requestBody.description)
             let session = URLSession.shared
             _ = session.dataTask(with: request as URLRequest, completionHandler: {data, response, error -> Void in
                 
@@ -361,6 +364,9 @@ class WBUser: NSObject {
             completion(false)
         }
     }
+    
+    
+    
     
     func searchFriends(minLong : String, maxLong : String, minLat : String, maxLat : String, accesToken:String,completion: @escaping (_ status : [User]) -> Void){
         var users : [User] = []

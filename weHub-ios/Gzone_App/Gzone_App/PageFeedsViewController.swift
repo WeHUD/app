@@ -33,6 +33,7 @@ class PageFeedsViewController: UITableViewController, IndicatorInfoProvider  {
         super.viewDidLoad()
         
         cellIdentifier = "MyFeedsCustomCell"
+        
         tableView.dataSource = self
         tableView.delegate = self
         tableView.rowHeight = 500.0
@@ -54,7 +55,7 @@ class PageFeedsViewController: UITableViewController, IndicatorInfoProvider  {
         super.viewWillAppear(animated)
         
         tableView.reloadData()
-
+        
     }
     
     func indicatorInfo(for pagerTabStripController: PagerTabStripViewController) -> IndicatorInfo {
@@ -82,7 +83,7 @@ class PageFeedsViewController: UITableViewController, IndicatorInfoProvider  {
             modalViewController.modalPresentationStyle = .popover
             present(modalViewController, animated: true, completion: nil)
         }
-
+        
     }
     
 }
@@ -98,8 +99,6 @@ extension PageFeedsViewController {
         
         return posts.count
     }
-    
-    
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         
@@ -157,17 +156,42 @@ extension PageFeedsViewController {
                 let tapGesture = UITapGestureRecognizer(target:self, action: #selector(self.showYoutubeModal(_:)))
                 cell.mediaImageView.addGestureRecognizer(tapGesture)
             }else {
-
+                
                 cell.mediaImageView.isUserInteractionEnabled = false
             }
         }
+        cell.tapAction = {(cell) in self.like(post: post)}
+        cell.commentAction = { (cell) in self.comment(post: post)}
         cell.numberComment.text = post.comments.count.description
         cell.numberLike.text = post.likes.count.description
-        cell.commentAction = { (cell) in self.comment(post: post)}
         
         return cell
         
     }
+    
+    
+    func like(post : Post){
+        for userId in post.likes{
+            if(userId == AuthenticationService.sharedInstance.currentUser?._id){
+                return
+            }
+        }
+        post.likes.append((AuthenticationService.sharedInstance.currentUser?._id)!)
+        self.likePost(post: post, likes: post.likes)
+        
+    }
+    func likePost(post : Post,likes : [String]){
+        let postsWB : WBPost = WBPost()
+        // self.offset += 1
+        postsWB.updatePost(post: post, usersId: likes, accessToken: AuthenticationService.sharedInstance.accessToken!){
+            (result: Bool) in
+            if(result){
+                self.refreshTableView()
+            }
+        }
+        
+    }
+    
     func comment(post : Post){
         print(post._id)
         let storyboard = UIStoryboard(name: "Home", bundle: nil)
@@ -180,7 +204,7 @@ extension PageFeedsViewController {
         
         
     }
-
+    
     
 }
 
@@ -198,7 +222,8 @@ extension PageFeedsViewController {
             }else if(self.posts.count != 0 && result.count > 0){
                 self.posts.append(contentsOf: result)
             }
-            self.posts.reverse()
+            self.posts.sort{ $0.datetimeCreated > $1.datetimeCreated }
+
             self.refreshTableView()
         }
     }

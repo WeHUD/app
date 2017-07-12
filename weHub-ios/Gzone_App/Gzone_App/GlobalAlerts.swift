@@ -43,7 +43,9 @@ extension UIViewController {
         alertController.addAction(UIAlertAction(title: "View Profile", style: UIAlertActionStyle.default, handler: { _ in
             let VC = self.storyboard?.instantiateViewController(withIdentifier: "ProfilUser") as! ProfilUserViewController
             //alertController.user = self.connectedUser
-            self.present(VC, animated: true, completion: nil)
+            VC.user = user
+            self.navigationController?.pushViewController(VC, animated: true)
+ 
         }))
         alertController.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel, handler: nil))
         self.present(alertController, animated: true, completion: nil)

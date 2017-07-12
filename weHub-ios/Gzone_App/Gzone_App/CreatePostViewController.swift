@@ -8,7 +8,7 @@
 
 import UIKit
 
-class CreatePostViewController : UIViewController{
+class CreatePostViewController : UIViewController,UITextViewDelegate{
     @IBOutlet weak var rateLbl: UILabel!
     
     @IBOutlet weak var rate1: UIButton!
@@ -33,8 +33,8 @@ class CreatePostViewController : UIViewController{
     
     @IBOutlet weak var textPost: UITextView!
     
+    var placeHolderUserComment : String = "Ajouter un commentaire"
     var isGame : Bool = false
-    
     var rates : [UIButton] = []
     var note : Int = 0
     var user : User?
@@ -50,6 +50,7 @@ class CreatePostViewController : UIViewController{
         self.initializeRatting(note: note)
         self.displayPostView(display: isPost)
         self.selectTypePost(typePost: typePost)
+        self.view.closeTextField()
     }
     
     func initializeRatting(note : Int){
@@ -108,6 +109,24 @@ class CreatePostViewController : UIViewController{
         }
         
     }
+    //Function for placeHolder
+    func createPlaceHolder(){
+        self.textPost.text = "Aujouter un commentaire"
+        self.textPost.textColor = UIColor.lightGray
+        
+    }
+    func textViewDidEndEditing(_ textView: UITextView) {
+        if textView.text.isEmpty {
+            self.createPlaceHolder()
+        }
+    }
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        if self.textPost.textColor == UIColor.lightGray {
+            self.textPost.text = nil
+            self.textPost.textColor = UIColor.black
+        }
+    }
+    
     @IBAction func rattingAction(_ sender: UIButton) {
         setImageRates()
         for i in 0 ..< self.rates.count {
@@ -256,7 +275,6 @@ class CreatePostViewController : UIViewController{
         
         
     }
-    
     
 }
 

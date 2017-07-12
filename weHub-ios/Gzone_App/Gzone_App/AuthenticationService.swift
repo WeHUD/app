@@ -78,7 +78,7 @@ class AuthenticationService: NSObject {
             // If user token exist
             // go to Home view directly
             
-            if NetworkReachability.shared.isNetworkAvailable == false {
+         /*   if NetworkReachability.shared.isNetworkAvailable == false {
                 let topViewController = UIApplication.shared.keyWindow?.rootViewController
                 topViewController?.networkServiceDisabledAlert()
             }
@@ -88,7 +88,11 @@ class AuthenticationService: NSObject {
                 let vc = storyboard.instantiateViewController(withIdentifier: "Home_ID") as! UITabBarController
                 let topViewController = UIApplication.shared.keyWindow?.rootViewController
                 topViewController?.present(vc, animated: true, completion: nil)
-            }
+            }*/
+            let storyboard = UIStoryboard(name: "Home", bundle: nil)
+            let vc = storyboard.instantiateViewController(withIdentifier: "Home_ID") as! UITabBarController
+            let topViewController = UIApplication.shared.keyWindow?.rootViewController
+            topViewController?.present(vc, animated: true, completion: nil)
 
         }
     }

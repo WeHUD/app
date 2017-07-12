@@ -15,7 +15,7 @@ class PagePopularViewController: UITableViewController, IndicatorInfoProvider {
     var posts : [Post] = []
     var users : [User] = []
     var offset : Int = 1
-    
+    var followers : [String] = []
     var cellIdentifier = ""
     var itemInfo = IndicatorInfo(title: "View")
     
@@ -27,11 +27,11 @@ class PagePopularViewController: UITableViewController, IndicatorInfoProvider {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
+    
     override func viewDidLoad() {
         
         super.viewDidLoad()
-        
+        self.followers  = (AuthenticationService.sharedInstance.currentUser?.followedUsers)!
         self.getFeeds()
         
         cellIdentifier = "PopularCustomCell"
@@ -80,7 +80,7 @@ class PagePopularViewController: UITableViewController, IndicatorInfoProvider {
         
         return itemInfo
     }
-
+    
     override func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         //getFeeds()
     }
@@ -93,7 +93,7 @@ class PagePopularViewController: UITableViewController, IndicatorInfoProvider {
 }
 
 extension PagePopularViewController {
-
+    
     override func numberOfSections(in tableView: UITableView) -> Int {
         
         return 1
@@ -117,8 +117,11 @@ extension PagePopularViewController {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
-        return posts.count
+        if(self.posts.count < 10){
+            return self.posts.count
+        }else{
+            return 10
+        }
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -143,7 +146,7 @@ extension PagePopularViewController {
             self.ratesHidden( rates: [cell.rate1,cell.rate2,cell.rate3,cell.rate4,cell.rate5],isHidden: true)
         }
         if(post.video != ""){
-
+            
             // Extract youtube ID from URL
             let mediaId = post.video.youtubeID!
             let mediaURL = "http://img.youtube.com/vi/"+mediaId+"/mqdefault.jpg"
@@ -162,30 +165,112 @@ extension PagePopularViewController {
                 cell.mediaImageView.isUserInteractionEnabled = false
             }
         }
+        cell.tapAction = {(cell) in self.like(post: post)}
         cell.numberLike.text = post.likes.count.description
+        
+        cell.commentAction = { (cell) in self.comment(post: post)}
+        cell.numberCommentsLbl.text = post.comments.count.description
+        if(post.userId == AuthenticationService.sharedInstance.currentUser?._id){
+            
+            cell.followBtn.isHidden = true        }
+        else{
+            cell.followBtn.isHidden = self.isFollower(post: post)
+        }
+        cell.followAction = {(cell) in self.follow(post: post)}
         
         return cell
     }
-
+    
 }
 
 extension PagePopularViewController {
-
+    
+    
+    func like(post : Post){
+        for userId in post.likes{
+            if(userId == AuthenticationService.sharedInstance.currentUser?._id){
+                return
+            }
+        }
+        post.likes.append((AuthenticationService.sharedInstance.currentUser?._id)!)
+        self.likePost(post: post, likes: post.likes)
+        
+    }
+    func likePost(post : Post,likes : [String]){
+        let postsWB : WBPost = WBPost()
+        // self.offset += 1
+        postsWB.updatePost(post: post, usersId: likes, accessToken: AuthenticationService.sharedInstance.accessToken!){
+            (result: Bool) in
+            if(result){
+                self.refreshTableView()
+            }
+        }
+        
+    }
+    
+    
+    func follow(post : Post){
+        self.followUser(post: post)
+        self.followers.append(post.userId)
+    }
+    
+    func isFollower(post : Post)->Bool{
+        for followerId in self.followers{
+            if(followerId == post.userId){
+                return true
+            }
+        }
+        return false
+    }
+    
+    func followUser(post : Post){
+        let followWB : WBFollower = WBFollower()
+        // self.offset += 1
+        followWB.addFollowerUser(userId: (AuthenticationService.sharedInstance.currentUser?._id)!, followerId: post.userId, accessToken: AuthenticationService.sharedInstance.accessToken!){
+            (result: Bool) in
+            if(result){
+                
+                self.refreshTableView()
+            }
+        }
+        
+    }
+    
+    
+    func comment(post : Post){
+        print(post._id)
+        let storyboard = UIStoryboard(name: "Home", bundle: nil)
+        let vc = storyboard.instantiateViewController(withIdentifier: "Comment_ID") as! CommentViewController
+        vc.post = post
+        vc.note = post.mark
+        vc.flagOpinion = post.flagOpinion
+        self.navigationController?.pushViewController(vc, animated: true)
+        
+        
+        
+    }
+    
+    
     func getFeeds()->Void{
         
         let postsWB : WBPost = WBPost()
         // self.offset += 1
-        postsWB.getPostTendance(accessToken: AuthenticationService.sharedInstance.accessToken!) {
+        postsWB.getAllPost(accessToken: AuthenticationService.sharedInstance.accessToken!) {
             (result: [Post]) in
             if(self.posts.count == 0){
                 self.posts = result
             }else if(self.posts.count != 0 && result.count > 0){
                 self.posts.append(contentsOf: result)
             }
+            self.getTendance()
             self.refreshTableView()
         }
     }
     
+    func getTendance(){
+        self.posts.sort{ $0.likes.count < $1.likes.count }
+        print(self.posts.sort{ $0.likes.count > $1.likes.count })
+    }
     func refreshTableView(){
         DispatchQueue.main.async(execute: {
             self.tableView.reloadData()
@@ -210,6 +295,6 @@ extension PagePopularViewController {
             rates[i].isHidden = isHidden
         }
     }
-
+    
 }
 

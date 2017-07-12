@@ -16,10 +16,23 @@ class ListGameViewController : UIViewController, UITableViewDataSource,UITableVi
     var isPost : Bool = true
     var note : Int = 0
     
+    var refreshCtrl = UIRefreshControl()
+    var dateFormatter = DateFormatter()
+    var last_index = 0
+    var update : Bool = true
+    var avatars : [UIImage] = []
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.setHidesBackButton(true, animated:true);
         self.getGames()
+        refreshCtrl.backgroundColor = UIColor.clear
+        refreshCtrl.tintColor = UIColor.black
+        refreshCtrl.attributedTitle = NSAttributedString(string: "Pull to refresh")
+        
+        refreshCtrl.addTarget(self, action: #selector(self.PullRefresh), for: UIControlEvents.valueChanged)
+        self.tableView.addSubview(refreshCtrl)
+        
+        
         self.tableView.delegate = self
         self.tableView.dataSource = self
     }
@@ -32,6 +45,10 @@ class ListGameViewController : UIViewController, UITableViewDataSource,UITableVi
         let cell = self.tableView.dequeueReusableCell(withIdentifier: "cell") as! ListGameTableViewCell
         let game = self.games[indexPath.row]
         cell.gameName.text = game.name
+        if(self.avatars.count > indexPath.row){
+            cell.boxart.image = self.avatars[indexPath.row]
+        }
+        
         return cell
     }
     
@@ -57,33 +74,76 @@ class ListGameViewController : UIViewController, UITableViewDataSource,UITableVi
     func getGames()->Void{
         
         let gameWB : WBGame = WBGame()
-        gameWB.getAllGames(accessToken: AuthenticationService.sharedInstance.accessToken!,offset: "0"){
+        gameWB.getAllGames(accessToken: AuthenticationService.sharedInstance.accessToken!,offset: last_index.description){
             (result: [Game]) in
-            self.games = result
-            self.refreshTableView()
+            if(self.last_index == 0){
+                self.games = result
+                self.imageFromUrl(games: self.games)
+                
+                self.refreshTableView()
+            }else{
+                if(result.count == 0){
+                    self.update = false
+                }else{
+                    self.games.append(contentsOf: result)
+                    self.imageFromUrl(games: self.games)
+                    
+                }
+                
+                let now = Date()
+                
+                let updateString = "Last Updated at " + self.dateFormatter.string(from: now)
+                
+                self.refreshCtrl.attributedTitle = NSAttributedString(string: updateString)
+                
+                if self.refreshCtrl.isRefreshing
+                {
+                    self.refreshCtrl.endRefreshing()
+                }
+                
+                
+            }
         }
     }
     
-    /* func getUsers()->Void{
-     
-     let userWB : WBUser = WBUser()
-     userWB.getFollowedUser(accessToken: AuthenticationService.sharedInstance.accessToken!,  userId : AuthenticationService.sharedInstance.currentUser!._id,offset: "0") {
-     (result: [User]) in
-     self.followers = result
-     self.imageFromUrl(followers: self.followers)
-     }
-     }*/
+    
+    func PullRefresh()
+    {
+        if(update){
+            last_index += 1
+            self.getGames()
+        }else{
+            let updateString = "Il n'y a pas de nouveaux jeux"
+            
+            self.refreshCtrl.attributedTitle = NSAttributedString(string: updateString)
+            
+            if self.refreshCtrl.isRefreshing
+            {
+                self.refreshCtrl.endRefreshing()
+            }
+        }
+    }
     
     
-    /* func imageFromUrl(followers : [User]){
-     for follower in followers {
-     let imageUrlString = follower.avatar
-     let imageUrl:URL = URL(string: imageUrlString!)!
-     let imageData:NSData = NSData(contentsOf: imageUrl)!
-     self.avatars.append(UIImage(data: imageData as Data)!)
-     }
-     self.refreshTableView()
-     }*/
+    
+    func imageFromUrl(games : [Game]){
+        self.avatars.removeAll()
+        for game in games {
+            if(game.boxart != ""){
+                let imageUrlString = game.boxart
+                let imageUrl:URL = URL(string: imageUrlString)!
+                let imageData:NSData = NSData(contentsOf: imageUrl)!
+                self.avatars.append(UIImage(data: imageData as Data)!)
+            }else{
+                let imageUrlString = "https://vignette3.wikia.nocookie.net/transformers/images/b/b6/Playschool_Go-Bots_G.png/revision/latest?cb=20061127024844"
+                let imageUrl:URL = URL(string: imageUrlString)!
+                let imageData:NSData = NSData(contentsOf: imageUrl)!
+                self.avatars.append(UIImage(data: imageData as Data)!)
+            }
+        }
+        self.refreshTableView()
+    }
+    
     
     
     

@@ -9,7 +9,13 @@
 import UIKit
 
 class GamesSearchTableViewCell: UITableViewCell {
+    var followAction: ((UITableViewCell) -> Void)?
     
+    @IBAction func followAction(_ sender: Any) {
+        followAction?(self)
+    }
+    
+
     @IBOutlet weak var gameIconImageView: UIImageView!
   
     @IBOutlet weak var GameNameLbl: UILabel!

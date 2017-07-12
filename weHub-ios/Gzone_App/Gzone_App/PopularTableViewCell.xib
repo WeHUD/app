@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12121" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12120" systemVersion="16D32" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -16,7 +16,7 @@
             <rect key="frame" x="0.0" y="0.0" width="311" height="495"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="9TG-SF-0Xj" id="9yj-4m-C6c">
-                <rect key="frame" x="0.0" y="0.0" width="311" height="495"/>
+                <rect key="frame" x="0.0" y="0.0" width="311" height="494.5"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Lvi-wA-hRu">
@@ -53,6 +53,9 @@
                                 <state key="normal" title="Follow">
                                     <color key="titleColor" red="0.63035731049999999" green="0.1430940564" blue="0.97544931989999994" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
+                                <connections>
+                                    <action selector="likePost:" destination="9TG-SF-0Xj" eventType="touchUpInside" id="MwB-ik-U7v"/>
+                                </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -87,11 +90,17 @@
                                 <rect key="frame" x="35" y="7" width="25" height="25"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" image="likeIcon"/>
+                                <connections>
+                                    <action selector="likePost:" destination="9TG-SF-0Xj" eventType="touchUpInside" id="jxG-hJ-NRW"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0Fp-sM-u0h">
                                 <rect key="frame" x="262" y="6" width="25" height="25"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" image="commentIcon"/>
+                                <connections>
+                                    <action selector="commentPost:" destination="9TG-SF-0Xj" eventType="touchUpInside" id="Uqv-GU-kfM"/>
+                                </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="1" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kcN-Cw-JXG" userLabel="Number Comment">
                                 <rect key="frame" x="221" y="8" width="33" height="21"/>
@@ -163,6 +172,7 @@
                 <outlet property="followBtn" destination="Tnd-2G-9bU" id="cD0-6c-evf"/>
                 <outlet property="likePostBtn" destination="0CC-MJ-Rzp" id="Fw1-M9-uz2"/>
                 <outlet property="mediaImageView" destination="d7Q-7f-2mP" id="TSx-lv-RQq"/>
+                <outlet property="numberCommentsLbl" destination="kcN-Cw-JXG" id="rSm-1z-EbF"/>
                 <outlet property="numberLike" destination="nh6-Fq-aEP" id="M7n-yj-HFM"/>
                 <outlet property="postDate" destination="VtS-Zg-AEv" id="PXT-eu-BZh"/>
                 <outlet property="postDescription" destination="YgM-cu-BEr" id="gKp-5s-ZHN"/>

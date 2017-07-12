@@ -7,8 +7,6 @@
 //
 
 import Foundation
-import UIKit
-
 class WBPost: NSObject {
     
     func getPostTendance(accessToken : String,_ completion: @escaping (_ result: [Post]) -> Void){
@@ -23,21 +21,16 @@ class WBPost: NSObject {
             if error != nil {
                 // If there is an error in the web request, print it to the console
                 print(error!.localizedDescription)
-                if  NetworkReachability.shared.isNetworkAvailable == false {
-                    
-                }
             }
-            else {
             
-                do{
-                    let jsonResult = try JSONSerialization.jsonObject(with: data!,  options: .allowFragments) as! NSArray
-                    print(jsonResult)
-                    posts = self.JSONToPostArray(jsonResult)
-                    completion(posts)
-                }
-                catch{
-                    print("error")
-                }
+            do{
+                let jsonResult = try JSONSerialization.jsonObject(with: data!,  options: .allowFragments) as! NSArray
+                print(jsonResult)
+                posts = self.JSONToPostArray(jsonResult)
+                completion(posts)
+            }
+            catch{
+                print("error")
             }
         })
         task.resume()
@@ -478,10 +471,15 @@ class WBPost: NSObject {
             }else{
                 mark = 0
             }
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
             
+            let datePost = dateFormatter.date(from: datetimeCreated)
+            
+            dateFormatter.dateFormat = "dd/MM/yyyy HH:mm:ss"
             
             //let username = json.object(forKey: "username") as! String
-            let post : Post = Post(_id: _id, userId: userId, gameId: gameId, text: text, likes: likes, comments: comments, flagOpinion: flagOpinion, video: video, datetimeCreated: datetimeCreated, author: author, mark: mark)
+            let post : Post = Post(_id: _id, userId: userId, gameId: gameId, text: text, likes: likes, comments: comments, flagOpinion: flagOpinion, video: video, datetimeCreated: dateFormatter.string(from: datePost!), author: author, mark: mark)
             posts.append(post);
         }
         print("posts :", posts)

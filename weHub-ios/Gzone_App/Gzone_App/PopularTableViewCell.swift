@@ -9,8 +9,27 @@
 import UIKit
 
 class PopularTableViewCell: UITableViewCell {
-
-
+    
+    var tapAction: ((UITableViewCell) -> Void)?
+    var commentAction: ((UITableViewCell) -> Void)?
+    var followAction: ((UITableViewCell) -> Void)?
+    
+    
+    @IBAction func likePost(_ sender: Any) {
+        tapAction?(self)
+    }
+    
+    @IBAction func commentPost(_ sender: Any) {
+        commentAction?(self)
+    }
+    
+    @IBAction func followPost(_ sender: Any) {
+        followAction?(self)
+    }
+    
+    
+    
+    
     @IBOutlet weak var numberLike: UILabel!
     @IBOutlet weak var userNameLabel: UILabel!
     @IBOutlet weak var userReplyLabel: UILabel!
@@ -27,6 +46,7 @@ class PopularTableViewCell: UITableViewCell {
     @IBOutlet weak var commentPostBtn: UIButton!
     @IBOutlet weak var followBtn: UIButton!
     
+    @IBOutlet weak var numberCommentsLbl: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -38,11 +58,11 @@ class PopularTableViewCell: UITableViewCell {
         followBtn.contentEdgeInsets = UIEdgeInsetsMake(5,10,5,10)
         
     }
-
+    
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
+        
         // Configure the view for the selected state
     }
-
+    
 }

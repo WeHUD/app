@@ -10,7 +10,8 @@ import UIKit
 
 class ListGameTableViewCell : UITableViewCell {
     
-   
+    
+    @IBOutlet weak var boxart: UIImageView!
     @IBOutlet weak var gameName: UILabel!
     
     override func awakeFromNib() {

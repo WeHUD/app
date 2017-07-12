@@ -41,7 +41,7 @@ class CommentViewController : UIViewController, UITableViewDataSource,UITableVie
     var post : Post?
     var flagOpinion : Bool?
     var note : Int?
-    var placeHolderUserComment : String = "Ajouter un commentaire"
+    var placeHolderUserComment : String = "Add comment"
     override func viewDidLoad() {
         super.viewDidLoad()
         self.createPlaceHolder()
@@ -53,13 +53,14 @@ class CommentViewController : UIViewController, UITableViewDataSource,UITableVie
         self.navigationItem.setHidesBackButton(true, animated:true);
         self.tableView.delegate = self
         self.tableView.dataSource = self
+        self.view.closeTextField()
     }
     
     //Function for placeHolder
     func createPlaceHolder(){
-        self.userComment.text = "Ajouter un commentaire"
+        self.userComment.text = "Add comment"
         self.userComment.textColor = UIColor.lightGray
-
+        
     }
     func textViewDidEndEditing(_ textView: UITextView) {
         if textView.text.isEmpty {
@@ -86,8 +87,8 @@ class CommentViewController : UIViewController, UITableViewDataSource,UITableVie
             cell.avatar.image = self.avatars[indexPath.row]
             cell.username.text = self.users[indexPath.row].username
             cell.reply.text = self.users[indexPath.row].reply
-
-
+            
+            
         }
         return cell
     }
@@ -95,7 +96,7 @@ class CommentViewController : UIViewController, UITableViewDataSource,UITableVie
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableViewAutomaticDimension
     }
-
+    
     func refreshTableView(){
         DispatchQueue.main.async(execute: {
             self.tableView.reloadData()
@@ -153,21 +154,21 @@ class CommentViewController : UIViewController, UITableViewDataSource,UITableVie
     }
     
     func getCommentByPostId()->Void{
-     
-     let commentWB : WBComment = WBComment()
-     commentWB.getCommentByPostId(postId: (post?._id)!, accessToken: AuthenticationService.sharedInstance.accessToken!, offset: "0") {
-     (result: [Comment]) in
-        self.comments = result
-        self.refreshTableView()
-        self.getUsersComment()
+        
+        let commentWB : WBComment = WBComment()
+        commentWB.getCommentByPostId(postId: (post?._id)!, accessToken: AuthenticationService.sharedInstance.accessToken!, offset: "0") {
+            (result: [Comment]) in
+            self.comments = result
+            self.refreshTableView()
+            self.getUsersComment()
         }
-     }
+    }
     
     func initializeRatting(note : Int){
         if(note == 0){
             return
         }
-      
+        
         for i in 0 ..< (note ) {
             self.rates[i].image = UIImage(named: "selectedStarIcon.png")
             
@@ -178,14 +179,14 @@ class CommentViewController : UIViewController, UITableViewDataSource,UITableVie
         if((post?.comments.count)! > 0){
             var index : Int = 0
             for _ in (post?.comments)!{
-               let userComment = User()
+                let userComment = User()
                 getUser(id: self.comments[index].userId, user : userComment)
                 index += 1
                 
             }
         }
-
-
+        
+        
     }
     func getUser(id : String,user:User){
         let userWB : WBUser = WBUser()
@@ -196,7 +197,7 @@ class CommentViewController : UIViewController, UITableViewDataSource,UITableVie
             self.refreshTableView()
         }
     }
-
+    
     func getUserById(id : String){
         let userWB : WBUser = WBUser()
         userWB.getUser(userId: (post?.userId)!, accessToken: AuthenticationService.sharedInstance.accessToken!){
@@ -219,13 +220,15 @@ class CommentViewController : UIViewController, UITableViewDataSource,UITableVie
                     let storyboard = UIStoryboard(name: "Home", bundle: nil)
                     let vc = storyboard.instantiateViewController(withIdentifier: "Home_ID") as! UITabBarController
                     self.present(vc, animated: true, completion: nil)
-
+                    
                 }
                 
             }
             
         }
+        
 
+        
     }
     
     func showYoutubeModal(_ sender : UITapGestureRecognizer){
@@ -248,14 +251,14 @@ class CommentViewController : UIViewController, UITableViewDataSource,UITableVie
         
     }
     
-
+    
     
     func imageFromUrl(url : String) {
         let imageUrlString = url
         let imageUrl:URL = URL(string: imageUrlString)!
         let imageData:NSData = NSData(contentsOf: imageUrl)!
         self.avatars.append(UIImage(data: imageData as Data)!)
-  
+        
     }
     
     @IBAction func cancelBtn(_ sender: Any) {

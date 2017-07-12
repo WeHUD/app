@@ -37,6 +37,44 @@ class WBGame: NSObject {
         task.resume()
     }
     
+    func updateGame(game : Game,usersId : [String] , accessToken : String, completion: @escaping (_ status : Bool) -> Void){
+        
+        let urlPath :String = "https://g-zone.herokuapp.com/games/" + game._id + "?access_token="+accessToken
+        
+        let url: NSURL = NSURL(string: urlPath)!
+        let request = NSMutableURLRequest(url: url as URL)
+        request.httpMethod = "PUT"
+        request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "content-type")
+        request.setValue("application/json", forHTTPHeaderField: "Content-type")
+        
+        let userData : NSDictionary = ["followersId" : usersId]
+        
+        
+        
+        
+        let options : JSONSerialization.WritingOptions = JSONSerialization.WritingOptions();
+        do{
+            let requestBody = try JSONSerialization.data(withJSONObject: userData, options: options)
+            
+            request.httpBody = requestBody
+            
+            let session = URLSession.shared
+            _ = session.dataTask(with: request as URLRequest, completionHandler: {data, response, error -> Void in
+                
+                if error != nil {
+                    // If there is an error in the web request, print it to the console
+                    print(error!.localizedDescription)
+                    completion(false)
+                }
+                completion(true)
+                
+            }).resume()
+        }
+        catch{
+            print("error")
+            completion(false)
+        }
+    }
     
     func deleteVideo(gameId : String, _ completion: @escaping (_ result: Void) -> Void){
         
@@ -154,9 +192,16 @@ class WBGame: NSObject {
             let datetimeCreated = (object as AnyObject).object(forKey: "datetimeCreated") as! String
             let followersId = (object as AnyObject).object(forKey: "followersId") as! [String]
             
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+            
+            let datePost = dateFormatter.date(from: datetimeCreated)
+            
+            dateFormatter.dateFormat = "dd/MM/yyyy HH:mm:ss"
             
             
-            let game : Game = Game(_id: _id, name: name, platforms: platforms, developer: developer, editor: editor, categories: categories, synopsis: synopsis, solo: solo, multiplayer: multiplayer, cooperative: cooperative, website: website, boxart: boxart, datetimeCreated: datetimeCreated, followerId: followersId)
+            
+            let game : Game = Game(_id: _id, name: name, platforms: platforms, developer: developer, editor: editor, categories: categories, synopsis: synopsis, solo: solo, multiplayer: multiplayer, cooperative: cooperative, website: website, boxart: boxart, datetimeCreated: dateFormatter.string(from: datePost!), followerId: followersId)
             games.append(game);
         }
         return games;
@@ -184,9 +229,14 @@ class WBGame: NSObject {
         let datetimeCreated = jsonGame.object(forKey: "datetimeCreated") as! String
         let followersId = jsonGame.object(forKey: "followersId") as! [String]
         
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
         
+        let datePost = dateFormatter.date(from: datetimeCreated)
         
-        let game : Game = Game(_id: _id, name: name, platforms: platforms, developer: developer, editor: editor, categories: categories, synopsis: synopsis, solo: solo, multiplayer: multiplayer, cooperative: cooperative, website: website, boxart: boxart, datetimeCreated: datetimeCreated, followerId: followersId)
+        dateFormatter.dateFormat = "dd/MM/yyyy HH:mm:ss"
+        
+        let game : Game = Game(_id: _id, name: name, platforms: platforms, developer: developer, editor: editor, categories: categories, synopsis: synopsis, solo: solo, multiplayer: multiplayer, cooperative: cooperative, website: website, boxart: boxart, datetimeCreated: dateFormatter.string(from: datePost!), followerId: followersId)
         return game
     }
     

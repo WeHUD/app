@@ -21,14 +21,21 @@ class GameViewController : UIViewController{
     @IBOutlet weak var cooperation: UILabel!
     @IBOutlet weak var multiAction: UIImageView!
     @IBOutlet weak var multi: UILabel!
+    @IBOutlet weak var unfollowBtn: UIButton!
     
     var game : Game?
-    
-      override func viewDidLoad() {
+    var isFollow : Bool?
+    override func viewDidLoad() {
         super.viewDidLoad()
-       self.initializeElements()
+        self.unfollowBtn.isHidden = !isFollow!
+        
+        self.initializeElements()
     }
     func initializeElements(){
+        
+        if(self.game?.boxart != ""){
+            self.avatar.imageFromUrl(url: (self.game?.boxart)!)
+        }
         self.gameName.text = self.game?.name
         self.developper.text = self.game?.developer
         self.editor.text = self.game?.editor
@@ -53,7 +60,7 @@ class GameViewController : UIViewController{
             self.multi.isHidden = true
         }
     }
-       func imageFromUrl(url : String)->UIImage{
+    func imageFromUrl(url : String)->UIImage{
         print(url)
         let imageUrlString = url
         let imageUrl:URL = URL(string: imageUrlString)!
@@ -62,7 +69,24 @@ class GameViewController : UIViewController{
         
         
     }
-  
+    
+    @IBAction func unfollowAction(_ sender: Any) {
+        self.game?.followerId.remove(at: (self.game?.followerId.index(of: (AuthenticationService.sharedInstance.currentUser?._id)!))!)
+        self.unfollowBtn.isHidden = true
+        self.unfollowPost()
+    }
+    
+    func unfollowPost(){
+        let gameWB : WBGame = WBGame()
+        // self.offset += 1
+        gameWB.updateGame(game: self.game!, usersId: (self.game?.followerId)!, accessToken: AuthenticationService.sharedInstance.accessToken! ){
+            (result: Bool) in
+            if(!result){
+                self.unfollowBtn.isHidden = false
+            }
+            
+        }
+    }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.

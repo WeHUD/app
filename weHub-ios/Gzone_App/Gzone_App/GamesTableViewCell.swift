@@ -9,21 +9,27 @@
 import UIKit
 
 class GamesTableViewCell: UITableViewCell {
+    var followAction: ((UITableViewCell) -> Void)?
     
+    @IBAction func followAction(_ sender: Any) {
+        followAction?(self)
+    }
+    
+    @IBOutlet weak var followButton: UIButton!
     @IBOutlet weak var gameTitleLbl: UILabel!
     @IBOutlet weak var gameImageView: UIImageView!
-
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
         
         
     }
-
+    
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
+        
         // Configure the view for the selected state
     }
-
+    
 }
