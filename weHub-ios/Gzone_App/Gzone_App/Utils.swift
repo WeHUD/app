@@ -61,12 +61,18 @@ extension UIImageView {
         
         return isSuccess
     }
+    
+    
     func imageFromUrl(url: String){
         let imageUrlString = url
-        let imageUrl:URL = URL(string: imageUrlString)!
-        let imageData:NSData = NSData(contentsOf: imageUrl)!
-        image = UIImage(data: imageData as Data)
-        self.image = image!
+        
+        if NSURL(string: imageUrlString) != nil {
+            
+            let imageUrl:URL = URL(string: imageUrlString)!
+            let imageData:NSData = NSData(contentsOf: imageUrl)!
+            image = UIImage(data: imageData as Data)
+            self.image = image!
+        }
     }
 }
 
@@ -85,4 +91,6 @@ extension String {
         
         return (self as NSString).substring(with: checkingResult.range)
     }
+    
+    
 }

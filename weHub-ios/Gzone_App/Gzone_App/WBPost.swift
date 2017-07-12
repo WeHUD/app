@@ -7,6 +7,8 @@
 //
 
 import Foundation
+import UIKit
+
 class WBPost: NSObject {
     
     func getPostTendance(accessToken : String,_ completion: @escaping (_ result: [Post]) -> Void){
@@ -21,16 +23,21 @@ class WBPost: NSObject {
             if error != nil {
                 // If there is an error in the web request, print it to the console
                 print(error!.localizedDescription)
+                if  NetworkReachability.shared.isNetworkAvailable == false {
+                    
+                }
             }
+            else {
             
-            do{
-                let jsonResult = try JSONSerialization.jsonObject(with: data!,  options: .allowFragments) as! NSArray
-                print(jsonResult)
-                posts = self.JSONToPostArray(jsonResult)
-                completion(posts)
-            }
-            catch{
-                print("error")
+                do{
+                    let jsonResult = try JSONSerialization.jsonObject(with: data!,  options: .allowFragments) as! NSArray
+                    print(jsonResult)
+                    posts = self.JSONToPostArray(jsonResult)
+                    completion(posts)
+                }
+                catch{
+                    print("error")
+                }
             }
         })
         task.resume()

@@ -86,6 +86,8 @@ class LocationService: NSObject, CLLocationManagerDelegate {
         let userLocation:CLLocation = locations[0] as CLLocation
         let userLocationDict:[String: CLLocation] = ["userLocation": userLocation]
         
+    
+        
         // Store user location in database every 5sec
         //...
         print("user latitude = \(userLocation.coordinate.latitude)")
@@ -99,6 +101,18 @@ class LocationService: NSObject, CLLocationManagerDelegate {
         // Post notification every time user location has been updated with user location as userInfo
         NotificationCenter.default.post(name: notificationUserLocation, object: nil, userInfo: userLocationDict)
         
+    }
+    
+    func updateLocationUser(userId : String, longitude : Double , latitude : Double )->Void{
+        let userWB : WBUser = WBUser();
+        userWB.updateLocationUser(userId: userId, longitude: longitude.description, latitude: latitude.description, accessToken: AuthenticationService.sharedInstance.accessToken!){
+            (result: Bool) in
+            if(result){
+                print("user latitude = " + (AuthenticationService.sharedInstance.currentUser?.latitude?.description)!)
+                print("user longitude = " + (AuthenticationService.sharedInstance.currentUser?.longitude?.description)!)
+            }
+            
+        }
     }
     
     

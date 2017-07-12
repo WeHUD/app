@@ -210,7 +210,7 @@ class CommentViewController : UIViewController, UITableViewDataSource,UITableVie
     }
     @IBAction func sendComment(_ sender: Any) {
         if(self.userComment.text == self.placeHolderUserComment && self.userComment.textColor == UIColor.lightGray){
-            locationServiceDisabledAlert(title: "Commentaire", message: "Vous ne pouvez pas envoyer de commentaire vide")
+            emptyFields(title: "Comments", message: "Your messsage field is empty")
         }else{
             let commentWB : WBComment = WBComment()
             commentWB.addComment(userId: (AuthenticationService.sharedInstance.currentUser?._id)!, postId: (post?._id)!, text: self.userComment.text, accessToken: AuthenticationService.sharedInstance.accessToken!){

@@ -26,7 +26,9 @@ class GeolocationViewController: UIViewController,CLLocationManagerDelegate {
     let locationService = LocationService.sharedInstance
     
     
-    var friendsLocMockArr = [FriendsLocation]() // Only for mock test
+    //var friendsLocMockArr = [FriendsLocation]() // Only for mock test
+    
+    var friends : [User] = []
     
     // Mock for friends locations
     struct FriendsLocation {
@@ -51,6 +53,9 @@ class GeolocationViewController: UIViewController,CLLocationManagerDelegate {
         isReachable = false
         updateIsInitialized = false
         pointLocation = locationService.pointFCMLocation
+        
+        redoSearchBtn.layer.cornerRadius = 15;
+        redoSearchBtn.contentEdgeInsets = UIEdgeInsetsMake(5,10,5,10)
         
         
         if let initialLocationStatus = locationService.isReachabled {
@@ -244,15 +249,15 @@ class GeolocationViewController: UIViewController,CLLocationManagerDelegate {
 // Custom Annotations
 class FriendsAnnotation: NSObject, MKAnnotation {
     
-    let user: UserMock?
+    let user: User
     let title: String?
     let subtitle: String?
     var coordinate: CLLocationCoordinate2D
     
-    init(user: UserMock?, coordinate: CLLocationCoordinate2D) {
+    init(user: User, coordinate: CLLocationCoordinate2D) {
         self.user = user
-        self.title = user?.username
-        self.subtitle = user?.username
+        self.title = user.username
+        self.subtitle = user.username
         self.coordinate = coordinate
         
         super.init()
@@ -331,7 +336,7 @@ extension GeolocationViewController : MKMapViewDelegate {
     func cleanMap() {
         
         // Remove all data stores for annotations
-        friendsLocMockArr.removeAll()
+        self.friends.removeAll()
         
         // Remove all locations on the map except user location
         self.mapView.annotations.forEach {
@@ -386,7 +391,7 @@ extension GeolocationViewController : MKMapViewDelegate {
             }
             
             // Change the current visible portion of map area to see the two points
-            mapView.setVisibleMapRect(rect, edgePadding: UIEdgeInsets.init(top: 20.0, left: 20.0, bottom: 20.0, right: 20.0), animated: true)
+            mapView.setVisibleMapRect(rect, edgePadding: UIEdgeInsets.init(top: 40.0, left: 40.0, bottom: 40.0, right: 40.0), animated: true)
             
             showRouteOnMap(points1: points[0], points2: points[1])
         }
@@ -416,29 +421,24 @@ extension GeolocationViewController : MKMapViewDelegate {
     }
     
     
-    func computeFriendsLocationInMapRect(minRect : CLLocationCoordinate2D, maxRect:CLLocationCoordinate2D) {
-        
-        // This mock Method implement the algorithm for searching friends locations in a given map area
+    func computeFriendsLocationInMapRect(minRect : CLLocationCoordinate2D, maxRect:CLLocationCoordinate2D)
+    {
+        // This Method implement the algorithm for searching friends locations in a given map area
         // It should be deported in API part
-        for loc in friendslocations {
-            
-            if ((loc.coord2D?.latitude)! > (minRect.latitude) && (loc.coord2D?.latitude)! < (maxRect.latitude)) {
-                
-                if ((loc.coord2D?.longitude)! > (minRect.longitude) && (loc.coord2D?.longitude)! < (maxRect.longitude)) {
-                    
-                    friendsLocMockArr.append(loc)
-                    
+        let userWB : WBUser = WBUser()
+        userWB.searchFriends(minLong: minRect.longitude.description, maxLong:  maxRect.longitude.description, minLat:  minRect.latitude.description, maxLat:  maxRect.latitude.description, accesToken: AuthenticationService.sharedInstance.accessToken!){
+            (result: [User]) in
+            if(result.count > 0){
+                self.friends = result
+                for friend in self.friends {
+                    if(friend._id != AuthenticationService.sharedInstance.currentUser?._id){
+                        let coord2D : CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: friend.latitude!, longitude: friend.longitude!)
+                        let annotation = FriendsAnnotation(user: friend, coordinate:coord2D  )
+                        self.mapView.addAnnotation(annotation)
+                    }
                 }
+                
             }
         }
-        
-        // Display the annotation for friends locations
-        for friend in friendsLocMockArr {
-            
-            let annotation = FriendsAnnotation(user: friend.user, coordinate:friend.coord2D!  )
-            mapView.addAnnotation(annotation)
-        }
-        
     }
-    
 }

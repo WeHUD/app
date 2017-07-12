@@ -19,20 +19,6 @@ class GamesViewController: UIViewController, UITableViewDelegate, UITableViewDat
     var offset : Int = 0
     var refreshControl = UIRefreshControl()
     
-   
-    //Mock for populate cells
-   /* struct Game {
-        var title : String?
-    }
-    
-    var games = [Game(title: "Horizon Zero Dawn"),Game(title: "Resident Evil"),Game(title: "Tekken 7"),Game(title: "Uncharted 4"),Game(title: "Grand Theft Auto V"),Game(title: "Injustice 2")]
-    
-    struct User {
-        var name : String?
-        var reply : String?
-    }*/
-    
-    
     override func viewDidLoad() {
         
         super.viewDidLoad()
@@ -133,9 +119,8 @@ class GamesViewController: UIViewController, UITableViewDelegate, UITableViewDat
 
    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     
-        //print(filteredGames.count)
         return filteredGames.count
-    
+
     }
     
    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

@@ -12,7 +12,7 @@ class ProfilUserViewController : UIViewController, UITableViewDelegate, UITableV
     @IBOutlet weak var reply: UILabel!
     @IBOutlet weak var username: UILabel!
     @IBOutlet weak var tableView: UITableView!
-     @IBOutlet weak var avatar: UIImageView!
+    @IBOutlet weak var avatar: UIImageView!
     var user : User?
     
     var posts : [Post] = []
@@ -31,7 +31,6 @@ class ProfilUserViewController : UIViewController, UITableViewDelegate, UITableV
         self.avatar.image = self.imageFromUrl(url: (self.user?.avatar!)!)
        // self.follow.text = AuthenticationService.sharedInstance.followers.count.description
         
-
         cellIdentifier = "MyFeedsCustomCell"
         tableView.dataSource = self
         tableView.delegate = self
@@ -40,7 +39,6 @@ class ProfilUserViewController : UIViewController, UITableViewDelegate, UITableV
         tableView.allowsSelection = false
         tableView.scrollsToTop = false
         tableView.register(UINib(nibName: "MyFeedsTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: cellIdentifier)
-
                
     }
     

@@ -25,11 +25,13 @@ PODS:
   - GoogleToolboxForMac/NSData+zlib (2.1.1):
     - GoogleToolboxForMac/Defines (= 2.1.1)
   - Protobuf (3.3.0)
+  - ReachabilitySwift (3)
   - XLPagerTabStrip (7.0.0)
 
 DEPENDENCIES:
   - Firebase/Core
   - Firebase/Messaging
+  - ReachabilitySwift (~> 3)
   - XLPagerTabStrip (~> 7.0)
 
 SPEC CHECKSUMS:
@@ -40,8 +42,9 @@ SPEC CHECKSUMS:
   FirebaseMessaging: 227406c05b0dc9290702d2e9f18ab5528f0c2cf2
   GoogleToolboxForMac: 8e329f1b599f2512c6b10676d45736bcc2cbbeb0
   Protobuf: d582fecf68201eac3d79ed61369ef45734394b9c
+  ReachabilitySwift: f5b9bb30a0777fac8f09ce8b067e32faeb29bb64
   XLPagerTabStrip: 9be80a66c6b7d60306b2c0a6004965016d68f813
 
-PODFILE CHECKSUM: 0e25e10d450e224d606f6a5fdcab55164d1fc254
+PODFILE CHECKSUM: f7ff6cebc8360ed3af7c37a754b75977373d08e7
 
 COCOAPODS: 1.0.1

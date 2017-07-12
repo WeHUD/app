@@ -12,36 +12,65 @@ class ContactViewController : UIViewController, UITableViewDataSource,UITableVie
     
     @IBOutlet var tableView: UITableView!
     
-
-    
     var followers : [User] = []
     var avatars : [UIImage] = []
+    let cellIdentifier = "FriendsSearchCustomCell"
+    
+    
     override func viewDidLoad() {
+        
         super.viewDidLoad()
         
         self.tableView.delegate = self
         self.tableView.dataSource = self
+        self.tableView.register(UINib(nibName: "FriendsSearchTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: cellIdentifier)
+        self.tableView.estimatedRowHeight = UITableViewAutomaticDimension
+        self.tableView.rowHeight = 90.0
+        self.tableView.dataSource = self
+        self.tableView.delegate = self
+        
         self.getUsers()
+        self.tableView.reloadData()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        
+        super.viewWillAppear(animated)
+        
+        self.tableView.reloadData()
+        
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        let storyboard = UIStoryboard(name: "Home", bundle: nil)
+        let controller = storyboard.instantiateViewController(withIdentifier: "ProfilUser") as! ProfilUserViewController
+        controller.user = self.followers[(self.tableView.indexPathForSelectedRow?.row)!]
+        
+        navigationController?.pushViewController(controller, animated: true)
+        
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+       
         return self.followers.count;
     }
-    
-     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = self.tableView.dequeueReusableCell(withIdentifier: "cell") as! ContactTableViewCell
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = self.tableView.dequeueReusableCell(withIdentifier: "FriendsSearchCustomCell") as! FriendsSearchTableViewCell
         
         let follower = followers[indexPath.row]
-        cell.label.text = follower.username
-        cell.usernamelbl.text = "@" + follower.username
-        cell.contactAvatar.image = self.avatars[indexPath.row]
-        cell.tapAction = { (cell) in self.unfollowAction(followerId: follower._id, row: tableView.indexPath(for: cell)!.row, indexPath: indexPath)
-        }
+        
+        
+        cell.userNameLbl.text = follower.username
+        cell.userReplyLbl.text = "@" + follower.username
+        //cell.userAvatarImageView.image = self.avatars[indexPath.row]
+        //cell.followBtn = { (cell) in self.unfollowAction(followerId: follower._id, row: tableView.indexPath(for: cell)!.row, indexPath: indexPath)
+       // }
+        
         return cell
     }
 
- 
-   
     func unfollowAction(followerId : String, row : Int,indexPath : IndexPath){
         
         let followerWB  = WBFollower()
@@ -62,25 +91,27 @@ class ContactViewController : UIViewController, UITableViewDataSource,UITableVie
     }
     
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-        let viewController = segue.destination as! ProfilUserViewController
-        viewController.user = self.followers[(self.tableView.indexPathForSelectedRow?.row)!]
-
-    }
     func getUsers()->Void{
         
         let userWB : WBUser = WBUser()
+        var userArr = [User]()
+        
         userWB.getFollowedUser(accessToken: AuthenticationService.sharedInstance.accessToken!,  userId : AuthenticationService.sharedInstance.currentUser!._id,offset: "0") {
             (result: [User]) in
-            self.followers = result
+            userArr = result
             self.imageFromUrl(followers: self.followers)
+            
+            DispatchQueue.main.async(execute: {
+                
+                self.followers = userArr
+                self.tableView.reloadData()
+            })
             
         }
     }
     
-      func imageFromUrl(followers : [User]){
+    func imageFromUrl(followers : [User]){
+        
         for follower in followers {
             let imageUrlString = follower.avatar
             let imageUrl:URL = URL(string: imageUrlString!)!
@@ -89,6 +120,4 @@ class ContactViewController : UIViewController, UITableViewDataSource,UITableVie
         }
         self.refreshTableView()
     }
-    
-    
 }

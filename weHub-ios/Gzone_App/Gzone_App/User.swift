@@ -18,14 +18,14 @@ open class User : NSObject{
     var password : String
     var avatar : String? = "https://s3.ca-central-1.amazonaws.com/g-zone/images/profile01.png"
     var datetimeRegister : String?
-    var longitude : Int?
-    var latitude : Int?
+    var longitude : Double?
+    var latitude : Double?
     var followedUsers : [String]?
     var followedGames : [String]?
     var score : Int?
     var connected : Bool?
     
-    init(id : String,dateOfBirth : String,email : String,username : String,reply : String,password : String,avatar : String,datetimeRegister : String,longitude : Int,latitude : Int,followedUsers : [String],followedGames : [String],score : Int,connected : Bool){
+    init(id : String,dateOfBirth : String,email : String,username : String,reply : String,password : String,avatar : String,datetimeRegister : String,longitude : Double,latitude : Double,followedUsers : [String],followedGames : [String],score : Int,connected : Bool){
         self.dateOfBirth = dateOfBirth
         self.email = email
         self.username = username

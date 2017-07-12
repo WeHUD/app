@@ -19,6 +19,7 @@
 		633254A51F143724000BAE8A /* SearchAllViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 633254A41F143724000BAE8A /* SearchAllViewController.swift */; };
 		633254A71F143C9C000BAE8A /* FriendsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 633254A61F143C9C000BAE8A /* FriendsViewController.swift */; };
 		633254A91F147B65000BAE8A /* SubscribeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 633254A81F147B65000BAE8A /* SubscribeViewController.swift */; };
+		63679C3F1F16A8630039F24D /* NetworkReachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63679C3E1F16A8630039F24D /* NetworkReachability.swift */; };
 		6397CCA01EB2550E0015F97A /* Home.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6397CC9F1EB2550E0015F97A /* Home.storyboard */; };
 		6397CCA41EB258580015F97A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6397CCA31EB258580015F97A /* Main.storyboard */; };
 		63B3F2171F066A3B0073F68E /* GeolocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63B3F2161F066A3B0073F68E /* GeolocationViewController.swift */; };
@@ -123,6 +124,7 @@
 		633254A41F143724000BAE8A /* SearchAllViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchAllViewController.swift; sourceTree = "<group>"; };
 		633254A61F143C9C000BAE8A /* FriendsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendsViewController.swift; sourceTree = "<group>"; };
 		633254A81F147B65000BAE8A /* SubscribeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubscribeViewController.swift; sourceTree = "<group>"; };
+		63679C3E1F16A8630039F24D /* NetworkReachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkReachability.swift; sourceTree = "<group>"; };
 		6397CC9F1EB2550E0015F97A /* Home.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Home.storyboard; sourceTree = "<group>"; };
 		6397CCA31EB258580015F97A /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		6397CCA51EB9F7BA0015F97A /* XLPagerTabStrip.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XLPagerTabStrip.framework; path = "Pods/../build/Debug-iphoneos/XLPagerTabStrip/XLPagerTabStrip.framework"; sourceTree = "<group>"; };
@@ -302,6 +304,7 @@
 				66E8D8071F12B516000EA571 /* AuthenticationService.swift */,
 				63B3F2181F0956310073F68E /* LocationService.swift */,
 				631AA7ED1F0EDC760095F191 /* PushNotificationService.swift */,
+				63679C3E1F16A8630039F24D /* NetworkReachability.swift */,
 			);
 			name = Services;
 			sourceTree = "<group>";
@@ -788,6 +791,7 @@
 				630EC8451F15404700E06ED7 /* HomeViewController.swift in Sources */,
 				66C394381F14EF28000F7DF6 /* GameViewController.swift in Sources */,
 				63EBDF0F1EF7E9E9002463D0 /* MyFeedsTableViewCell.swift in Sources */,
+				63679C3F1F16A8630039F24D /* NetworkReachability.swift in Sources */,
 				66C394431F14F86D000F7DF6 /* ListGameViewController.swift in Sources */,
 				633254A51F143724000BAE8A /* SearchAllViewController.swift in Sources */,
 				63B3F2291F0B02EF0073F68E /* FriendsSearchTableViewCell.swift in Sources */,

@@ -30,6 +30,17 @@ class AuthenticationService: NSObject {
         
     }
     
+    func logOffUser(){
+        
+        // Retrieve user token into UserDefault interface if exist
+        if(UserDefaults.standard.array(forKey: "token") != nil){
+            
+            UserDefaults.standard.removeObject(forKey: "token")
+            
+        }
+    
+    }
+    
     func getUserInfoByCredentials(userLogin : String!, userPassword : String!){
         
     
@@ -67,28 +78,20 @@ class AuthenticationService: NSObject {
             // If user token exist
             // go to Home view directly
             
-            let storyboard = UIStoryboard(name: "Home", bundle: nil)
-            let vc = storyboard.instantiateViewController(withIdentifier: "Home_ID") as! UITabBarController
-            let topViewController = UIApplication.shared.keyWindow?.rootViewController
-            topViewController?.present(vc, animated: true, completion: nil)
+            if NetworkReachability.shared.isNetworkAvailable == false {
+                let topViewController = UIApplication.shared.keyWindow?.rootViewController
+                topViewController?.networkServiceDisabledAlert()
+            }
+            else {
             
+                let storyboard = UIStoryboard(name: "Home", bundle: nil)
+                let vc = storyboard.instantiateViewController(withIdentifier: "Home_ID") as! UITabBarController
+                let topViewController = UIApplication.shared.keyWindow?.rootViewController
+                topViewController?.present(vc, animated: true, completion: nil)
+            }
+
         }
     }
     
-    
-    /*func getUserToken(userToken : String) {
-        
-        // Get all information about the current user
-        let userWB : WBUser = WBUser()
-        userWB.getUserByToken(accessToken: userToken){
-            (result : User) in
-            // User information has to be global
-            self.currentUser = result
-
-            print(self.currentUser?.username ?? "no name")
-            print(self.currentUser?.avatar ?? "no avatar")
-            
-        }
-    }*/
     
 }

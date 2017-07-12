@@ -55,7 +55,6 @@ class LoginViewController: UIViewController,UITextFieldDelegate{
     
     @IBAction func log(_ sender: Any) {
         
-        
         AuthenticationService.sharedInstance.getUserInfoByCredentials(userLogin: self.accountTxtField.text, userPassword: self.passTxtField.text)
         
     }

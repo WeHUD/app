@@ -297,16 +297,16 @@ class WBUser: NSObject {
             }else{
                 avatar = " "
             }
-            var longitude: Int
+            var longitude: Double
             if((object as AnyObject).object(forKey: "longitude") != nil){
-                longitude = (object as AnyObject).object(forKey: "longitude") as! Int
+                longitude = (object as AnyObject).object(forKey: "longitude") as! Double
             }else{
                 longitude = 0
             }
             
-            var latitude : Int
+            var latitude : Double
             if((object as AnyObject).object(forKey: "latitude") != nil){
-                latitude = (object as AnyObject).object(forKey: "latitude") as! Int
+                latitude = (object as AnyObject).object(forKey: "latitude") as! Double
             }else{
                 latitude = 0
             }
@@ -327,17 +327,16 @@ class WBUser: NSObject {
     func updateLocationUser(userId : String,longitude : String,latitude : String,accessToken : String, completion: @escaping (_ status : Bool) -> Void){
         
         let urlPath :String = "https://g-zone.herokuapp.com/users/" + userId + "?acess_token="+accessToken
-        
+        print(urlPath)
         let url: NSURL = NSURL(string: urlPath)!
         let request = NSMutableURLRequest(url: url as URL)
         request.httpMethod = "PUT"
         request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "content-type")
         request.setValue("application/json", forHTTPHeaderField: "Content-type")
         
-        let userData : NSDictionary = ["longitude" : longitude,"latitude" : latitude]
+        let userData : Dictionary = ["longitude" : longitude,"latitude" : latitude] as Dictionary<String, String>
         
-        
-        
+        print(userData)
         
         let options : JSONSerialization.WritingOptions = JSONSerialization.WritingOptions();
         do{
@@ -363,6 +362,32 @@ class WBUser: NSObject {
         }
     }
     
+    func searchFriends(minLong : String, maxLong : String, minLat : String, maxLat : String, accesToken:String,completion: @escaping (_ status : [User]) -> Void){
+        var users : [User] = []
+        let urlPath :String = "https://g-zone.herokuapp.com/users/location/"+minLong+"/"+maxLong+"/"+minLat+"/"+maxLat+"?access_token="+accesToken
+        
+        print (urlPath)
+        let url: URL = URL(string: urlPath)!
+        let session = URLSession.shared
+        let task = session.dataTask(with: url, completionHandler: {data, response, error -> Void in
+            
+            if error != nil {
+                // If there is an error in the web request, print it to the console
+                print(error!.localizedDescription)
+            }
+            
+            do{
+                let jsonResult = try JSONSerialization.jsonObject(with: data!,  options: .allowFragments) as! NSArray
+                print(jsonResult)
+                users = WBUser.JSONToUserArray(jsonResult)
+                completion(users)
+            }
+            catch{
+                print("error")
+            }
+        })
+        task.resume()
+    }
     
     static func JSONToUser(jsonUsers : NSDictionary) ->User?{
         let _id = jsonUsers.object(forKey: "_id") as! String
@@ -376,16 +401,16 @@ class WBUser: NSObject {
         }else{
             avatar = " "
         }
-        var longitude: Int
+        var longitude: Double
         if(jsonUsers.object(forKey: "longitude") != nil){
-            longitude = jsonUsers.object(forKey: "longitude") as! Int
+            longitude = jsonUsers.object(forKey: "longitude") as! Double
         }else{
             longitude = 0
         }
         
-        var latitude : Int
+        var latitude : Double
         if(jsonUsers.object(forKey: "latitude") != nil){
-            latitude = jsonUsers.object(forKey: "latitude") as! Int
+            latitude = jsonUsers.object(forKey: "latitude") as! Double
         }else{
             latitude = 0
         }

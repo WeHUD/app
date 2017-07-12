@@ -17,30 +17,47 @@ class MessageTableViewController : UIViewController, UITableViewDataSource,UITab
     var postsGames : [Post] = []
     var postsVideo : [Post] = []
     var postsReceived : [Post] = []
-    
-    
     var refreshControl = UIRefreshControl()
     var dateFormatter = DateFormatter()
     var last_index = 0
     var update : Bool = true
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         self.dateFormatter.dateStyle = DateFormatter.Style.short
         self.dateFormatter.timeStyle = DateFormatter.Style.long
         
         refreshControl.backgroundColor = UIColor.clear
         refreshControl.tintColor = UIColor.black
         refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
+
+        refreshControl.addTarget(self, action: #selector(self.PullRefresh), for: UIControlEvents.valueChanged)
         
-        refreshControl.addTarget(self, action: Selector(("PullRefresh")), for: UIControlEvents.valueChanged)
+        typePostSegmentControl.frame.size.width = self.view.frame.width
+        typePostSegmentControl.tintColor = UIColor(red: 130/255.0, green: 18/255.0, blue: 23/255.0, alpha: 1.0)
+        typePostSegmentControl.layer.cornerRadius = 0.0;
+        typePostSegmentControl.layer.borderColor = UIColor(red: 130/255.0, green: 18/255.0, blue: 23/255.0, alpha: 1.0).cgColor
+        typePostSegmentControl.layer.borderWidth = 1.0;
+        typePostSegmentControl.layer.masksToBounds = true;
         
+        self.tableView.dataSource = self;
+        self.tableView.delegate = self;
+        self.tableView.estimatedRowHeight = UITableViewAutomaticDimension
         self.tableView.addSubview(refreshControl)
-        self.tableView.delegate = self
-        self.tableView.dataSource = self
+        
+        // Force the UITabbar to be displayed at the bottom of the UIscrollView
+        let tabBarHeight = self.tabBarController?.tabBar.bounds.height
+        self.edgesForExtendedLayout = UIRectEdge.all
+        self.tableView.contentInset = UIEdgeInsets(top: 0.0, left: 0.0, bottom: tabBarHeight!, right: 0.0)
+        
         self.getPosts()
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        
+        
         switch self.typePostSegmentControl.selectedSegmentIndex {
         case 0:
             return self.posts.count
@@ -82,6 +99,7 @@ class MessageTableViewController : UIViewController, UITableViewDataSource,UITab
         
         if(self.typePostSegmentControl.selectedSegmentIndex == 2){
             let cell = self.tableView.dequeueReusableCell(withIdentifier: "cellVideo") as! MessageVideoTableViewCell
+            
             cell.username.text = post.author
             cell.reply.text = "@"+post.author
             cell.date.text = post.datetimeCreated.description
@@ -141,10 +159,8 @@ class MessageTableViewController : UIViewController, UITableViewDataSource,UITab
         
     }
     
-    
-    
-    func PullRefresh()
-    {
+    func PullRefresh(){
+        
         if(update){
             last_index += 1
             self.getPosts()
@@ -163,23 +179,21 @@ class MessageTableViewController : UIViewController, UITableViewDataSource,UITab
     }
     
     
-    
     func refreshTableView(){
+        
+        print (posts)
+        
         DispatchQueue.main.async(execute: {
             self.tableView.reloadData()
         })
     }
+    
     @IBAction func indexChanged(_ sender: Any) {
+        
         self.refreshTableView()
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-        //  let viewController = segue.destination as! ProfilUserViewController
-        //  viewController.user = self.posts[(self.tableView.indexPathForSelectedRow?.row)!]
-        
-    }
+
     func getPostReceiver()->Void{
         
         let postWB : WBPost = WBPost()
@@ -243,8 +257,6 @@ class MessageTableViewController : UIViewController, UITableViewDataSource,UITab
         }
         self.postsVideo.reverse()
     }
-    
-    
     
     
 }

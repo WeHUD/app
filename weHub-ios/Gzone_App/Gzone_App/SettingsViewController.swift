@@ -10,6 +10,7 @@ import UIKit
 
 class SettingsViewController : UIViewController{
     
+    
     @IBOutlet weak var username: UILabel!
     
     @IBOutlet weak var reply: UILabel!
@@ -22,13 +23,14 @@ class SettingsViewController : UIViewController{
     
     @IBOutlet weak var validBtn: UIButton!
     @IBOutlet weak var mailTxtFld: UITextField!
-
-    
     @IBOutlet weak var avatarUser: UIImageView!
     @IBOutlet weak var avatar1: UIButton!
     @IBOutlet weak var avatar4: UIButton!
     @IBOutlet weak var avatar3: UIButton!
     @IBOutlet weak var avatar2: UIButton!
+    
+    @IBOutlet weak var loaderAvatar: UIActivityIndicatorView!
+    
     
     var indexAvatar : Int?
     var connectedUser : User?
@@ -37,32 +39,56 @@ class SettingsViewController : UIViewController{
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.initializeAvatars()
         connectedUser = AuthenticationService.sharedInstance.currentUser!
         self.getUsers()
-       self.username.text = connectedUser?.username
-       self.reply.text = "@" + (connectedUser?.username)!
-        self.avatarUser.image = self.imageFromUrl(url: (self.connectedUser?.avatar)!)
-        self.usernameTxtFld.text = connectedUser?.username
-        self.mailTxtFld.text = connectedUser?.email
-        self.replyTxtFld.text = connectedUser?.reply
-        self.indexAvatar = self.searchAvatar()
+        loaderAvatar.isHidden  = false
+        loaderAvatar.startAnimating()
     }
     
+    
     func initializeAvatars(){
-        self.avatar1.setImage(self.imageFromUrl(url: "https://s3.ca-central-1.amazonaws.com/g-zone/images/profile01.png"), for: .normal)
-        self.avatar2.setImage(self.imageFromUrl(url: "https://s3.ca-central-1.amazonaws.com/g-zone/images/profile02.png"), for: .normal)
-        self.avatar3.setImage(self.imageFromUrl(url: "https://s3.ca-central-1.amazonaws.com/g-zone/images/profile03.png"), for: .normal)
-        self.avatar4.setImage(self.imageFromUrl(url: "https://s3.ca-central-1.amazonaws.com/g-zone/images/profile04.png"), for: .normal)
+        
+        var img1 : UIImage?
+        var img2 : UIImage?
+        var img3 : UIImage?
+        var img4 : UIImage?
+        
+        
+        img1 = imageFromUrl(url: "https://s3.ca-central-1.amazonaws.com/g-zone/images/profile01.png")
+        img2 = imageFromUrl(url: "https://s3.ca-central-1.amazonaws.com/g-zone/images/profile02.png")
+        img3 = imageFromUrl(url: "https://s3.ca-central-1.amazonaws.com/g-zone/images/profile03.png")
+        img4 = imageFromUrl(url: "https://s3.ca-central-1.amazonaws.com/g-zone/images/profile04.png")
+        
+        if img1 != nil {
+            self.avatar1.setImage(img1, for: .normal)
+        }
+        if img2 != nil {
+            self.avatar2.setImage(img2, for: .normal)
+        }
+        if img3 != nil {
+            self.avatar3.setImage(img3, for: .normal)
+        }
+        if img4 != nil {
+            self.avatar4.setImage(img4, for: .normal)
+        }
     }
+    
     func imageFromUrl(url : String)->UIImage{
         print(url)
         let imageUrlString = url
         let imageUrl:URL = URL(string: imageUrlString)!
         let imageData:NSData = NSData(contentsOf: imageUrl)!
-        return UIImage(data: imageData as Data)!
         
+        var imageLoaded  = UIImage(data: imageData as Data)
         
+        if imageLoaded == nil {
+             imageLoaded = UIImage(named: "userDefault")
+        }
+        else {
+            loaderAvatar.stopAnimating()
+            loaderAvatar.isHidden  = true
+        }
+        return imageLoaded!
     }
 
     
@@ -93,10 +119,7 @@ class SettingsViewController : UIViewController{
     
     @IBAction func editUser(_ sender: Any) {
         updateUser()
-        let storyboard = UIStoryboard(name: "Home", bundle: nil)
-        let vc = storyboard.instantiateViewController(withIdentifier: "Home_ID") as! UITabBarController
-        self.present(vc, animated: true, completion: nil)
-
+        
     }
     
     func updateUser(){
@@ -107,6 +130,10 @@ class SettingsViewController : UIViewController{
             (result: Bool) in
             AuthenticationService.sharedInstance.currentUser! = user
             print(result)
+            
+            DispatchQueue.main.async {
+                self.navigationController?.popToRootViewController(animated: true)
+            }
         }
     }
     
@@ -125,7 +152,18 @@ class SettingsViewController : UIViewController{
         userWB.getFollowedUser(accessToken: AuthenticationService.sharedInstance.accessToken!,  userId : AuthenticationService.sharedInstance.currentUser!._id,offset: "0") {
             (result: [User]) in
             self.followers = result
-             self.numberOfFollower.text = self.followers.count.description
+            
+            DispatchQueue.main.async {
+                self.username.text = self.connectedUser?.username
+                self.reply.text = "@" + (self.connectedUser?.username)!
+                self.avatarUser.image = self.imageFromUrl(url: (self.connectedUser?.avatar)!)
+                self.usernameTxtFld.text = self.connectedUser?.username
+                self.mailTxtFld.text = self.connectedUser?.email
+                self.replyTxtFld.text = self.connectedUser?.reply
+                self.indexAvatar = self.searchAvatar()
+               self.numberOfFollower.text = self.followers.count.description
+                
+            }
             
         }
     }

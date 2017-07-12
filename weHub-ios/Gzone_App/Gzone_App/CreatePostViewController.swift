@@ -228,7 +228,7 @@ class CreatePostViewController : UIViewController{
     
     @IBAction func sendPost(_ sender: Any) {
         if(self.textPost.text == ""){
-            locationServiceDisabledAlert(title: "Post", message: "Veuillez écrire un post")
+            emptyFields(title: "Post", message: "Please write a post")
             return;
         }
         if(self.viewSegmentControl.selectedSegmentIndex == 0){

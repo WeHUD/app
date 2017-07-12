@@ -8,6 +8,7 @@ target 'Gzone_App' do
  pod 'Firebase/Core'
  pod 'Firebase/Messaging'
  pod 'XLPagerTabStrip', '~> 7.0'
+ pod 'ReachabilitySwift', '~> 3'
  target 'Gzone_AppTests' do
     inherit! :search_paths
     # Pods for testing

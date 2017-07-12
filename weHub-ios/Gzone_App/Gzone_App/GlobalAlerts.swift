@@ -19,7 +19,25 @@ extension UIViewController {
         
     }
     
-    func followUserAlert (user: UserMock ) {
+    func networkServiceDisabledAlert () {
+        
+        let alertController = UIAlertController(title: "No network", message: "Please check your network.", preferredStyle: .alert)
+        let OKAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+        alertController.addAction(OKAction)
+        self.present(alertController, animated: true, completion: nil)
+        
+    }
+    
+    func emptyFields (title: String, message: String ) {
+        
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let OKAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+        alertController.addAction(OKAction)
+        self.present(alertController, animated: true, completion: nil)
+        
+    }
+    
+    func followUserAlert (user: User ) {
         
         let alertController = UIAlertController(title: "Want to know more about \(user.username) ?", message: "", preferredStyle: .alert)
         alertController.addAction(UIAlertAction(title: "View Profile", style: UIAlertActionStyle.default, handler: { _ in

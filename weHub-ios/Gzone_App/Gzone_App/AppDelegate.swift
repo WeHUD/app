@@ -17,14 +17,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         
-        // Call Location service for updating user location
+        // Call Location service to updating user location
         LocationService.sharedInstance.locationManager.startUpdatingLocation()
         
         // Call FCM for initializing push-notification
         PushNotificationService.sharedInstance.configureFirebase(application: application)
         
-        // Call Authentication service for initializing user authentication
+        // Call ReachabilityManager service to start monitoring network
+        NetworkReachability.shared.startMonitoring()
+        
+        // Call Authentication service to initialize user authentication
         AuthenticationService.sharedInstance.initUserAuthentication()
+        
         
         return true
     }
@@ -41,10 +45,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillEnterForeground(_ application: UIApplication) {
         // Called as part of the transition from the background to the active state; here you can undo many of the changes made on entering the background.
+        
+        
+        // Stops monitoring network reachability status changes
+        NetworkReachability.shared.stopMonitoring()
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+        
+        // Starts monitoring network reachability status changes
+        NetworkReachability.shared.startMonitoring()
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
