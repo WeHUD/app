@@ -9,7 +9,14 @@
 import UIKit
 
 class FriendsSearchTableViewCell: UITableViewCell {
-
+    
+    var UnfollowAction: ((UITableViewCell) -> Void)?
+    
+    @IBAction func UnfollowAction(_ sender: Any) {
+        UnfollowAction?(self)
+    }
+    
+    
     @IBOutlet weak var userNameLbl: UILabel!
     @IBOutlet weak var userReplyLbl: UILabel!
     @IBOutlet weak var userAvatarImageView: UIImageView!

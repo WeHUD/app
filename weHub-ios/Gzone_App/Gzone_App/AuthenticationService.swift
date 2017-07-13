@@ -89,10 +89,12 @@ class AuthenticationService: NSObject {
                 let topViewController = UIApplication.shared.keyWindow?.rootViewController
                 topViewController?.present(vc, animated: true, completion: nil)
             }*/
-            let storyboard = UIStoryboard(name: "Home", bundle: nil)
-            let vc = storyboard.instantiateViewController(withIdentifier: "Home_ID") as! UITabBarController
-            let topViewController = UIApplication.shared.keyWindow?.rootViewController
-            topViewController?.present(vc, animated: true, completion: nil)
+            DispatchQueue.main.async() {
+                let storyboard = UIStoryboard(name: "Home", bundle: nil)
+                let vc = storyboard.instantiateViewController(withIdentifier: "Home_ID") as! UITabBarController
+                let topViewController = UIApplication.shared.keyWindow?.rootViewController
+                topViewController?.present(vc, animated: true, completion: nil)
+            }
 
         }
     }

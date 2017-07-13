@@ -54,6 +54,7 @@
                                     <color key="titleColor" red="0.63035731049999999" green="0.1430940564" blue="0.97544931989999994" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
                                 <connections>
+                                    <action selector="followPost:" destination="9TG-SF-0Xj" eventType="touchUpInside" id="qqg-gz-E1e"/>
                                     <action selector="likePost:" destination="9TG-SF-0Xj" eventType="touchUpInside" id="MwB-ik-U7v"/>
                                 </connections>
                             </button>
@@ -91,7 +92,7 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" image="likeIcon"/>
                                 <connections>
-                                    <action selector="likePost:" destination="9TG-SF-0Xj" eventType="touchUpInside" id="jxG-hJ-NRW"/>
+                                    <action selector="likePost:" destination="9TG-SF-0Xj" eventType="touchUpInside" id="Ll8-IV-rQy"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0Fp-sM-u0h">
@@ -99,7 +100,7 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" image="commentIcon"/>
                                 <connections>
-                                    <action selector="commentPost:" destination="9TG-SF-0Xj" eventType="touchUpInside" id="Uqv-GU-kfM"/>
+                                    <action selector="commentPost:" destination="9TG-SF-0Xj" eventType="touchUpInside" id="Jop-y0-mwI"/>
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="1" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kcN-Cw-JXG" userLabel="Number Comment">

@@ -64,9 +64,10 @@ class ContactViewController : UIViewController, UITableViewDataSource,UITableVie
         
         cell.userNameLbl.text = follower.username
         cell.userReplyLbl.text = "@" + follower.username
-        //cell.userAvatarImageView.image = self.avatars[indexPath.row]
-        //cell.followBtn = { (cell) in self.unfollowAction(followerId: follower._id, row: tableView.indexPath(for: cell)!.row, indexPath: indexPath)
-       // }
+        cell.userAvatarImageView.image = self.avatars[indexPath.row]
+        cell.UnfollowAction = { (cell) in self.unfollowAction(followerId: follower._id, row: tableView.indexPath(for: cell)!.row, indexPath: indexPath)}
+      //  cell.followBtn = { (cell) in self.unfollowAction(followerId: follower._id, row: tableView.indexPath(for: cell)!.row, indexPath: indexPath)
+
         
         return cell
     }
@@ -77,9 +78,8 @@ class ContactViewController : UIViewController, UITableViewDataSource,UITableVie
         followerWB.deleteFollowerUser(userId: AuthenticationService.sharedInstance.currentUser!._id, followerId: followerId,accessToken: AuthenticationService.sharedInstance.accessToken!){
             (result: Bool) in
             DispatchQueue.main.async(execute: {
-                self.followers.remove(at: row)
-                self.refreshTableView()
-            })
+                self.getUsers()
+                           })
             print(result)
         }
     }
@@ -94,30 +94,27 @@ class ContactViewController : UIViewController, UITableViewDataSource,UITableVie
     func getUsers()->Void{
         
         let userWB : WBUser = WBUser()
-        var userArr = [User]()
         
         userWB.getFollowedUser(accessToken: AuthenticationService.sharedInstance.accessToken!,  userId : AuthenticationService.sharedInstance.currentUser!._id,offset: "0") {
             (result: [User]) in
-            userArr = result
-            self.imageFromUrl(followers: self.followers)
             
-            DispatchQueue.main.async(execute: {
-                
-                self.followers = userArr
-                self.tableView.reloadData()
-            })
+            self.followers = result
+            self.imageFromUrl(followers: self.followers)
+            self.refreshTableView()
+
             
         }
     }
     
     func imageFromUrl(followers : [User]){
-        
+        self.avatars.removeAll()
         for follower in followers {
             let imageUrlString = follower.avatar
             let imageUrl:URL = URL(string: imageUrlString!)!
             let imageData:NSData = NSData(contentsOf: imageUrl)!
             self.avatars.append(UIImage(data: imageData as Data)!)
         }
-        self.refreshTableView()
+
     }
+ 
 }

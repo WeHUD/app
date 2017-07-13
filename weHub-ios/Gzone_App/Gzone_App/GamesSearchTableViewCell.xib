@@ -35,7 +35,7 @@
                                     <color key="titleColor" red="0.63035731049999999" green="0.1430940564" blue="0.97544931989999994" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
                                 <connections>
-                                    <action selector="followAction:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="apC-6e-OJk"/>
+                                    <action selector="followAction:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="VTm-m2-IFc"/>
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="TopLeft" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Game name" lineBreakMode="wordWrap" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DKP-Ax-qBN" userLabel="GameName">

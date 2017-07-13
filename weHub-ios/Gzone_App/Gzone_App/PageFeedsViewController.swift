@@ -53,7 +53,7 @@ class PageFeedsViewController: UITableViewController, IndicatorInfoProvider  {
     override func viewWillAppear(_ animated: Bool) {
         
         super.viewWillAppear(animated)
-        
+        self.getFeeds()
         tableView.reloadData()
         
     }
@@ -219,11 +219,13 @@ extension PageFeedsViewController {
             (result: [Post]) in
             if(self.posts.count == 0){
                 self.posts = result
+                self.posts.reverse()
             }else if(self.posts.count != 0 && result.count > 0){
+                self.posts.reverse()
                 self.posts.append(contentsOf: result)
+                self.posts.reverse()
             }
-            self.posts.sort{ $0.datetimeCreated > $1.datetimeCreated }
-
+            
             self.refreshTableView()
         }
     }

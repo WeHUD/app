@@ -175,6 +175,7 @@ class ProfilUserViewController : UIViewController, UITableViewDelegate, UITableV
         postsWB.getPostByUserId(userId: (user?._id)!,accessToken: AuthenticationService.sharedInstance.accessToken!,offset: "0" ){
             (result: [Post]) in
             self.posts = result
+            self.posts.reverse()
             self.refreshTableView()
         }
     }
@@ -185,6 +186,7 @@ class ProfilUserViewController : UIViewController, UITableViewDelegate, UITableV
         userWB.getFollowedUser(accessToken: AuthenticationService.sharedInstance.accessToken!,  userId : AuthenticationService.sharedInstance.currentUser!._id,offset: "0") {
             (result: [User]) in
             self.followers = result
+            
          
             
         }

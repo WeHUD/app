@@ -13,16 +13,21 @@ class GamesViewController: UIViewController, UITableViewDelegate, UITableViewDat
     var myTableView: UITableView!
     var searchController : UISearchController!
     let cellIdentifier = "GamesSearchCustomCell"
-    
+    var avatars : [UIImage] = []
     var filteredGames: [Game] = []
     var games : [Game] = []
     var offset : Int = 0
-    var refreshControl = UIRefreshControl()
+    var refreshCtrl = UIRefreshControl()
+    var dateFormatter = DateFormatter()
+    var last_index = 0
+    var update : Bool = true
+
     
     override func viewDidLoad() {
         
         super.viewDidLoad()
-        
+        self.getGames()
+ 
         print("Games View");
         
         let barHeight: CGFloat = UIApplication.shared.statusBarFrame.size.height - 20
@@ -31,9 +36,16 @@ class GamesViewController: UIViewController, UITableViewDelegate, UITableViewDat
         
         myTableView = UITableView(frame: CGRect(x: 0, y: barHeight, width: displayWidth, height: displayHeight - barHeight))
         myTableView.register(UINib(nibName: "GamesSearchTableViewCell", bundle: Bundle.main), forCellReuseIdentifier: cellIdentifier)
-        myTableView.allowsSelection = false
-        myTableView.estimatedRowHeight = UITableViewAutomaticDimension
-        myTableView.rowHeight = 140.0
+        refreshCtrl.backgroundColor = UIColor.clear
+        refreshCtrl.tintColor = UIColor.black
+        refreshCtrl.attributedTitle = NSAttributedString(string: "Pull to refresh")
+        
+        refreshCtrl.addTarget(self, action: #selector(self.PullRefresh), for: UIControlEvents.valueChanged)
+        self.myTableView.addSubview(refreshCtrl)
+
+       // myTableView.allowsSelection = false
+       myTableView.estimatedRowHeight = UITableViewAutomaticDimension
+       myTableView.rowHeight = 100
         myTableView.dataSource = self
         myTableView.delegate = self
         
@@ -70,11 +82,7 @@ class GamesViewController: UIViewController, UITableViewDelegate, UITableViewDat
         self.view.addSubview(myTableView)
         
         
-        // Retrieve tableview game content from webservice
-        //self.games.removeAll()
-        // Initialize data for list
-        self.getGames()
-        self.myTableView.reloadData()
+
         
     }
     
@@ -128,11 +136,48 @@ class GamesViewController: UIViewController, UITableViewDelegate, UITableViewDat
         let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! GamesSearchTableViewCell
         
         let row = indexPath.row
-        
+    
         cell.GameNameLbl.text = self.filteredGames[row].name
-        
+        if(self.avatars.count > indexPath.row){
+            cell.imageView?.image = self.avatars[indexPath.row]
+        }
+    
+        cell.FollowBtn.isHidden = self.isFollower(game:  self.filteredGames[row])
+        cell.followAction = {(cell) in self.follow(game:  self.filteredGames[row])}
         return cell
     }
+    
+    func follow(game : Game){
+        game.followerId.append((AuthenticationService.sharedInstance.currentUser?._id)!)
+        self.games[self.games.index(of: game)!] = game
+        
+        self.followGame(game: game)
+        
+        
+    }
+    
+    func isFollower(game : Game)->Bool{
+        for follower in game.followerId{
+            if(follower == AuthenticationService.sharedInstance.currentUser?._id){
+                return true
+            }
+        }
+        return false
+    }
+    
+    func followGame(game : Game){
+        let gameWB : WBGame = WBGame()
+        // self.offset += 1
+        gameWB.updateGame(game: game, usersId: game.followerId, accessToken: AuthenticationService.sharedInstance.accessToken!){
+            (result: Bool) in
+            if(result){
+                self.refreshTableView()
+            }
+        }
+        
+    }
+
+    
     
     
     override func didReceiveMemoryWarning() {
@@ -143,29 +188,84 @@ class GamesViewController: UIViewController, UITableViewDelegate, UITableViewDat
 }
 
 extension GamesViewController {
-    
-    func getGames(){
+    func refreshTableView(){
+            self.myTableView.reloadData()
         
-        let gamesWB : WBGame = WBGame()
-        var gamesArr = [Game]()
-        self.offset += 1
+    }
+
+    func getGames()->Void{
         
-        
-        gamesWB.getAllGames(accessToken: (AuthenticationService.sharedInstance.accessToken!),offset: self.offset.description) {
+        let gameWB : WBGame = WBGame()
+        gameWB.getAllGames(accessToken: AuthenticationService.sharedInstance.accessToken!,offset: last_index.description){
             (result: [Game]) in
-            
-            gamesArr = result
-            print("WB : \(gamesArr.count)")
-            print(result)
-            
-            DispatchQueue.main.async(execute: {
-                
-                self.games = gamesArr
+            if(self.last_index == 0){
+                self.games = result
                 self.filteredGames = self.games
-                self.myTableView.reloadData()
-            })
+                self.imageFromUrl(games: self.games)
+                
+               self.refreshTableView()
+            }else{
+                if(result.count == 0){
+                    self.update = false
+                }else{
+                    self.games.append(contentsOf: result)
+                    self.filteredGames = self.games
+                    self.imageFromUrl(games: self.filteredGames)
+                    
+                }
+
+                let now = Date()
+                
+                let updateString = "Last Updated at " + self.dateFormatter.string(from: now)
+                
+                self.refreshCtrl.attributedTitle = NSAttributedString(string: updateString)
+                
+                if self.refreshCtrl.isRefreshing
+                {
+                    self.refreshCtrl.endRefreshing()
+                }
+                
+                
+            }
+            self.refreshTableView()
         }
     }
+    func PullRefresh()
+    {
+        if(update){
+            last_index += 1
+            self.getGames()
+        }else{
+            let updateString = "Il n'y a pas de nouveaux jeux"
+            
+            self.refreshCtrl.attributedTitle = NSAttributedString(string: updateString)
+            
+            if self.refreshCtrl.isRefreshing
+            {
+                self.refreshCtrl.endRefreshing()
+            }
+        }
+    }
+    
+    func imageFromUrl(games : [Game]){
+        self.avatars.removeAll()
+        for game in games {
+            if(game.boxart != ""){
+                let imageUrlString = game.boxart
+                let imageUrl:URL = URL(string: imageUrlString)!
+                let imageData:NSData = NSData(contentsOf: imageUrl)!
+                self.avatars.append(UIImage(data: imageData as Data)!)
+            }else{
+                let imageUrlString = "https://vignette3.wikia.nocookie.net/transformers/images/b/b6/Playschool_Go-Bots_G.png/revision/latest?cb=20061127024844"
+                let imageUrl:URL = URL(string: imageUrlString)!
+                let imageData:NSData = NSData(contentsOf: imageUrl)!
+                self.avatars.append(UIImage(data: imageData as Data)!)
+            }
+        }
+        self.refreshTableView()
+    }
+    
+
 }
 
 

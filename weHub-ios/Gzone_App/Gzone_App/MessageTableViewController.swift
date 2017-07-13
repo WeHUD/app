@@ -217,6 +217,7 @@ class MessageTableViewController : UIViewController, UITableViewDataSource,UITab
                 if(result.count == 0){
                     self.update = false
                 }else{
+                    self.posts.reverse()
                     self.posts.append(contentsOf: result)
                     self.posts.reverse()
                 }
