@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/contact_paddingBottom">
+
+    <ImageView
+        android:id="@+id/contact_userAvatar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/contact_marginLeftStart"
+        android:layout_marginStart="@dimen/contact_marginLeftStart"
+        android:layout_marginTop="@dimen/contact_marginTop"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/img"
+        android:scaleType="fitCenter"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@mipmap/ic_launcher" />
+
+    <TextView
+        android:id="@+id/contact_username"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/contact_txtMarginRightEnd"
+        android:layout_marginLeft="@dimen/contact_txtMarginLeftStart"
+        android:layout_marginRight="@dimen/contact_txtMarginRightEnd"
+        android:layout_marginStart="@dimen/contact_txtMarginLeftStart"
+        android:layout_marginTop="@dimen/contact_marginTop"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="@android:color/black"
+        app:layout_constraintLeft_toRightOf="@+id/contact_userAvatar"
+        app:layout_constraintRight_toLeftOf="@+id/contact_userConnected"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@string/username" />
+
+    <TextView
+        android:id="@+id/contact_userReply"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/contact_txtMarginRightEnd"
+        android:layout_marginLeft="@dimen/contact_txtMarginLeftStart"
+        android:layout_marginRight="@dimen/contact_txtMarginRightEnd"
+        android:layout_marginStart="@dimen/contact_txtMarginLeftStart"
+        android:layout_marginTop="@dimen/contact_txtMarginTop"
+        android:textColor="@android:color/holo_blue_dark"
+        app:layout_constraintLeft_toRightOf="@+id/contact_userAvatar"
+        app:layout_constraintRight_toLeftOf="@+id/contact_userConnected"
+        app:layout_constraintTop_toBottomOf="@+id/contact_username"
+        tools:text="@string/reply" />
+
+    <ImageView
+        android:id="@+id/contact_userConnected"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/contact_marginRightEnd"
+        android:layout_marginRight="@dimen/contact_marginRightEnd"
+        android:layout_marginTop="@dimen/contact_icMarginTop"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/img"
+        android:scaleType="fitCenter"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@drawable/ic_not_connected" />
+</android.support.constraint.ConstraintLayout>

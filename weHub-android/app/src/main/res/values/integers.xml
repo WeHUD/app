@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="text_maxLines">5</integer>
+    <integer name="single_field">1</integer>
+    <integer name="newOpinion_numStars">5</integer>
+</resources>

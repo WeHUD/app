@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="esgi.project.wehud.activity.PublishActivity">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/newPost_padding">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/newPost_video"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_video"
+                android:maxLines="@integer/text_maxLines" />
+
+            <MultiAutoCompleteTextView
+                android:id="@+id/newPost_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/newPost_marginTop"
+                android:hint="@string/hint_text"
+                android:maxLines="@integer/text_maxLines" />
+
+            <CheckBox
+                android:id="@+id/newPost_isOpinion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/newPost_marginTop"
+                android:text="@string/newPost_isOpinion" />
+
+            <CheckBox
+                android:id="@+id/newPost_encryptMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/newPost_marginTop"
+                android:text="@string/newPost_encryptMessage"
+                android:visibility="gone" />
+
+            <RatingBar
+                android:id="@+id/newPost_mark"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/newPost_marginTop"
+                android:numStars="@integer/newOpinion_numStars"
+                android:visibility="gone" />
+
+            <AutoCompleteTextView
+                android:id="@+id/newPost_game"
+                style="@style/TextAppearance.AppCompat.Medium"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/newPost_marginTop"
+                android:hint="@string/newPost_gameOptional"
+                android:textColor="@android:color/holo_blue_dark" />
+
+            <AutoCompleteTextView
+                android:id="@+id/newPost_receiver"
+                style="@style/TextAppearance.AppCompat.Medium"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/newPost_marginTop"
+                android:clickable="true"
+                android:hint="@string/newPost_receiverOptional"
+                android:textColor="@android:color/holo_blue_dark" />
+
+            <Button
+                android:id="@+id/newPost_publishButton"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/publishButton_marginTop"
+                android:text="@string/publish" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>
